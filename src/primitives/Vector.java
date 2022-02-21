@@ -1,4 +1,5 @@
-package geometries;
+package primitives;
 
 public class Vector {
+
 }

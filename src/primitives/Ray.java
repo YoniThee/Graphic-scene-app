@@ -1,4 +1,4 @@
-package geometries;
+package primitives;
 
 public class Ray {
 }
