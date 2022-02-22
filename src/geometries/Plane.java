@@ -6,8 +6,8 @@ import primitives.Vector;
 
 public class Plane implements Geometry
 {
-    Point p0;
-    Vector normal;
+    private Point p0;
+    private Vector normal;
 
     public Plane(Point p0, Vector normal) {
         this.p0 = p0;
@@ -15,7 +15,16 @@ public class Plane implements Geometry
     }
 
     public Plane(Point p1, Point p2, Point p3) {
+        this.p0 = p1;
+        this.normal = null;
+    }
 
+    public Point getP0() {
+        return p0;
+    }
+
+    public Vector getNormal() {
+        return normal;
     }
 
     @Override

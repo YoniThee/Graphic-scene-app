@@ -15,12 +15,12 @@ public class Point {
     }
 
     public Point add(Vector vector) {
-        return null;
+        return new Point(this.xyz.d1 + vector.xyz.d1,this.xyz.d2 + vector.xyz.d2,this.xyz.d3 + vector.xyz.d3);
     }
 
 
     public Vector subtract(Point p1) {
-        return null;
+        return new Vector(p1.xyz.d1 - this.xyz.d1, p1.xyz.d2 - this.xyz.d2, p1.xyz.d3 - this.xyz.d3);
     }
 
 

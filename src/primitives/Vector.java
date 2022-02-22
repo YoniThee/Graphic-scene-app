@@ -5,7 +5,7 @@ This class is used for arithmetic operations between vectors or points
 public class Vector extends Point {
     public Vector(double d1,double d2, double d3) {
         super(d1,d2,d3);
-        if(isZero(lengthSquared()))
+        if(Util.isZero(lengthSquared()))
             throw new IllegalArgumentException ("exception from constructor of vector");
 
     }
@@ -42,7 +42,7 @@ public class Vector extends Point {
     }
     public Vector normalize()
     {
-        Vector vec = scale(Math.sqrt(x*x +y*y + z*z));
+        Vector vec = scale(1/(Math.sqrt(xyz.d1*xyz.d1 +xyz.d2*xyz.d2 + xyz.d3*xyz.d3)));
         return vec;
     }
 
@@ -51,15 +51,16 @@ public class Vector extends Point {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vector vector = (Vector) o;
-        return Double.compare(vector.x, x) == 0 && Double.compare(vector.y, y) == 0 && Double.compare(vector.z, z) == 0;
+        return Double.compare(vector.xyz.d1, xyz.d1) == 0 && Double.compare(vector.xyz.d2, xyz.d2) == 0
+                && Double.compare(vector.xyz.d3, xyz.d3) == 0;
     }
 
     @Override
     public String toString() {
         return "Vector{" +
-                "x=" + x +
-                ", y=" + y +
-                ", z=" + z +
+                "x=" + xyz.d1 +
+                ", y=" + xyz.d2 +
+                ", z=" + xyz.d3 +
                 '}';
     }
 }
