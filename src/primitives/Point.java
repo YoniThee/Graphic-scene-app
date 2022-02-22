@@ -1,6 +1,8 @@
 package primitives;
 
 
+import java.util.Objects;
+
 public class Point {
     protected Double3 xyz;
 
@@ -14,13 +16,28 @@ public class Point {
         return xyz.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return Objects.equals(xyz, point.xyz);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(xyz);
+    }
+
     public Point add(Vector vector) {
+
         return new Point(this.xyz.d1 + vector.xyz.d1,this.xyz.d2 + vector.xyz.d2,this.xyz.d3 + vector.xyz.d3);
+
     }
 
 
     public Vector subtract(Point p1) {
-        return new Vector(p1.xyz.d1 - this.xyz.d1, p1.xyz.d2 - this.xyz.d2, p1.xyz.d3 - this.xyz.d3);
+        return new Vector(this.xyz.d1 - p1.xyz.d1, this.xyz.d2 - p1.xyz.d2, this.xyz.d3 - p1.xyz.d3);
     }
 
 
