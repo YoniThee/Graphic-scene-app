@@ -11,6 +11,10 @@ public class Point {
         xyz = new Double3(x, y, z);
     }
 
+    public Point(Double3 xyz1) {
+        xyz = xyz1;
+    }
+
     @Override
     public String toString() {
         return xyz.toString();
@@ -30,14 +34,14 @@ public class Point {
     }
 
     public Point add(Vector vector) {
-
-        return new Point(this.xyz.d1 + vector.xyz.d1,this.xyz.d2 + vector.xyz.d2,this.xyz.d3 + vector.xyz.d3);
-
+        return new Point(this.xyz.add(vector.xyz));
+        //return new Point(this.xyz.d1 + vector.xyz.d1,this.xyz.d2 + vector.xyz.d2,this.xyz.d3 + vector.xyz.d3);
     }
 
 
     public Vector subtract(Point p1) {
-        return new Vector(this.xyz.d1 - p1.xyz.d1, this.xyz.d2 - p1.xyz.d2, this.xyz.d3 - p1.xyz.d3);
+        return new Vector(this.xyz.subtract(p1.xyz));
+        //return new Vector(this.xyz.d1 - p1.xyz.d1, this.xyz.d2 - p1.xyz.d2, this.xyz.d3 - p1.xyz.d3);
     }
 
 

@@ -9,13 +9,20 @@ public class Vector extends Point {
             throw new IllegalArgumentException ("exception from constructor of vector");
 
     }
+
+    public Vector(Double3 xyz1) {
+        super(xyz1);
+    }
+
     public Vector add(Vector v2)
     {
-        return new Vector(xyz.d1 +v2.xyz.d1, this.xyz.d2+ v2.xyz.d2,this.xyz.d3+ v2.xyz.d3);
+        return new Vector(this.xyz.add(v2.xyz));
+        //return new Vector(xyz.d1 +v2.xyz.d1, this.xyz.d2+ v2.xyz.d2,this.xyz.d3+ v2.xyz.d3);
     }
     public Vector subtract(Vector v2)
     {
-        return new Vector(xyz.d1 - v2.xyz.d1, this.xyz.d2 - v2.xyz.d2,this.xyz.d3 - v2.xyz.d3);
+        return new Vector(this.xyz.subtract(v2.xyz));
+        //return new Vector(xyz.d1 - v2.xyz.d1, this.xyz.d2 - v2.xyz.d2,this.xyz.d3 - v2.xyz.d3);
     }
     // return new vector with values * input num
     public Vector scale(double num)
@@ -25,7 +32,9 @@ public class Vector extends Point {
     // Scalar multiplication func
     public double dotProduct(Vector v2)
     {
-        return (xyz.d1 * v2.xyz.d1 + xyz.d2 * v2.xyz.d2 + xyz.d3 * v2.xyz.d3);
+        Double3 temp = this.xyz.product(v2.xyz);
+        return temp.d1 + temp.d2 + temp.d3;
+        //return (xyz.d1 * v2.xyz.d1 + xyz.d2 * v2.xyz.d2 + xyz.d3 * v2.xyz.d3);
     }
     public Vector crossProduct(Vector v2)
     {
