@@ -5,26 +5,31 @@ This class is used for arithmetic operations between vectors or points
 public class Vector extends Point {
     public Vector(double d1,double d2, double d3) {
         super(d1,d2,d3);
-        if(Util.isZero(lengthSquared()))
+        if(xyz.equals(Double3.ZERO))
             throw new IllegalArgumentException ("exception from constructor of vector");
+
+
+        // if(Util.isZero(lengthSquared()))
+          //  throw new IllegalArgumentException ("exception from constructor of vector");
 
     }
 
-    public Vector(Double3 xyz1) {
-        super(xyz1);
+    public Vector(Double3 xyz) {
+        super(xyz);
     }
 
     public Vector add(Vector v2)
     {
         return new Vector(this.xyz.add(v2.xyz));
-        //return new Vector(xyz.d1 +v2.xyz.d1, this.xyz.d2+ v2.xyz.d2,this.xyz.d3+ v2.xyz.d3);
     }
+
+
     public Vector subtract(Vector v2)
     {
         return new Vector(this.xyz.subtract(v2.xyz));
-        //return new Vector(xyz.d1 - v2.xyz.d1, this.xyz.d2 - v2.xyz.d2,this.xyz.d3 - v2.xyz.d3);
     }
-    // return new vector with values * input num
+
+
     public Vector scale(double num)
     {
         return new Vector(xyz.d1 * num, xyz.d2 * num, xyz.d3 * num);
@@ -49,10 +54,10 @@ public class Vector extends Point {
     {
         return Math.sqrt(lengthSquared());
     }
+
     public Vector normalize()
     {
-        Vector vec = scale(1/(Math.sqrt(xyz.d1*xyz.d1 +xyz.d2*xyz.d2 + xyz.d3*xyz.d3)));
-        return vec;
+        return new Vector(xyz.reduce(length()));
     }
 
     @Override
