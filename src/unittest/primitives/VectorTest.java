@@ -22,17 +22,10 @@ class VectorTest {
     @Test
     public void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
-        //TC01: Vector is Zero at first ctor
+        //TC01: Vector is Zero at ctor
         assertThrows(IllegalArgumentException.class, ()->new Vector(0, 0, 0),
                 "Failed constructing a correct vector from ctor with 3 parameters");
-        //TC02: Vector is Zero at second ctor
-/*        try {
-            Double3 p = new Double3(0,0,0);
-            new Vector(p);
-        } catch (IllegalArgumentException e) {
-            fail("Failed constructing a correct vector from ctor with parameter Double3");
-        }
-*/
+
         // =============== Boundary Values Tests ==================
         // TC10: The parameters at the first ctor is close to zero
             assertThrows(IllegalArgumentException.class, //
@@ -40,12 +33,6 @@ class VectorTest {
                         0.000000000000000000000000001),
                 "Failed constructing a correct vector from ctor with 3 parameters");
 
-        // TC11: The parameters at the second ctor is close to zero
-/*            Double3 p = new Double3(0.000000000001,0.000000000001,0.000000000001);
-            assertThrows(IllegalArgumentException.class, //
-                () -> new Vector(p),
-                "Constructed a polygon with vertix on a side");
-*/
     }
     /**
      * Test method for {@link primitives.Vector#add(Vector)}.
