@@ -38,5 +38,6 @@ class CylinderTest {
         assertThrows(IllegalArgumentException.class, () -> {
             cylinder.getNormal(new Point(0, 0, 0));
         }, "ERROR: A test on the bottom of the cylinder");
+
     }
 }
