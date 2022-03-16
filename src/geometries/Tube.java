@@ -4,6 +4,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 public class Tube implements Geometry {
 
     protected  double radius;
@@ -20,4 +22,8 @@ public class Tube implements Geometry {
         return null;
     }
 
+    @Override
+    public List<Point> findIntsersections(Ray ray) {
+        return null;
+    }
 }
