@@ -7,6 +7,9 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
+
 public class Plane implements Geometry
 {
     private Point p0;
@@ -35,8 +38,26 @@ public class Plane implements Geometry
         return normal;
     }
 
+
+
+
+
+
     @Override
     public List<Point> findIntsersections(Ray ray) {
-        return null;
+
+        Vector rayDir = ray.getDir();
+        double nv = rayDir.dotProduct(normal);
+        if(isZero(nv))
+        {
+            return null;
+        }
+
+        double t = alignZero((p0.subtract(ray.getP0())).dotProduct(normal)/nv);
+        if(t>0)
+        {
+            return List.of(ray.getP0().add(rayDir.scale(t)));
+        }
+        else return null;
     }
 }
