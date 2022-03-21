@@ -4,7 +4,10 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static primitives.Util.alignZero;
 
 public class Sphere implements Geometry{
     Point center;
@@ -28,7 +31,33 @@ public class Sphere implements Geometry{
         return point.subtract(center).normalize();}
 
     @Override
-    public List<Point> findIntsersections(Ray ray) {
-        return null;
+    public List<Point> findIntsersections(Ray ray)
+    {
+        // u = Vector(O-P0)
+        Vector u = center.subtract(ray.getP0());
+        // Tm = V*u
+        double Tm = u.dotProduct(ray.getDir());
+        // d = |U|^2-Tm^2
+        double d = Math.sqrt(u.lengthSquared() - (Tm*Tm));
+        if(d >= this.radius)
+            return null;
+        else
+        {
+        // Th = sqrt(r^2-d^2)
+        double Th = Math.sqrt((this.radius*this.radius) - (d*d));
+        double Ti = Tm + Th;
+        //p1 = p0 + Ti*V
+        Point p1 = ray.getP0().add(ray.getDir().scale(Ti));
+        Ti = alignZero(Tm - Th);
+            if(Ti > 0){
+                // p2 = p0 + Ti*V
+                Point p2 = ray.getP0().add(ray.getDir().scale(Ti));
+                return List.of(p1,p2);
+            }
+            else {
+                return List.of(p1);
+            }
+        }
+
     }
 }
