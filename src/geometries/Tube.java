@@ -24,6 +24,6 @@ public class Tube implements Geometry {
 
     @Override
     public List<Point> findIntsersections(Ray ray) {
-        return null;
+        return List.of();
     }
 }
