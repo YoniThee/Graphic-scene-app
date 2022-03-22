@@ -19,7 +19,12 @@ public class Tube implements Geometry {
 
     @Override
     public Vector getNormal(Point point) {
-        return null;
+        double t = axisRay.getDir().dotProduct((point.subtract(axisRay.getP0())));
+        if (t == 0) {
+            throw new IllegalArgumentException("ERROR: Point is versicle to the ray");
+        }
+        Point o = axisRay.getP0().add(axisRay.getDir().scale(t));
+        return point.subtract(o).normalize();
     }
 
     @Override
