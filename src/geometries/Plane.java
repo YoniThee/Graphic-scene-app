@@ -56,7 +56,7 @@ public class Plane implements Geometry
         double t = alignZero((p0.subtract(ray.getP0())).dotProduct(normal)/nv);
         if(t>0)
         {
-            return List.of(ray.getP0().add(rayDir.scale(t)));
+            return List.of(ray.getPoint(t));
         }
         else return null;
     }

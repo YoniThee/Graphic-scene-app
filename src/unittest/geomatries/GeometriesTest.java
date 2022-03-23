@@ -36,7 +36,7 @@ class GeometriesTest {
         //TC13: Only one shape is have intersection
         assertEquals(geometries.findIntsersections(ray).size(),1,"Wrong calculate of intersection");
         //TC14: All the shapes is got intersection
-        assertEquals(geometries.findIntsersections(new Ray(new Point(0.5,0.5,-1),new Vector(1,1,1))).size()
+        assertEquals(geometries.findIntsersections(new Ray(new Point(0.5,0.5,-1),new Vector(-0.5,-0.5,1))).size()
                 ,3,"Wrong calculate of intersection");
 
     }

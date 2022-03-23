@@ -47,7 +47,7 @@ public class Sphere implements Geometry{
         double Th = Math.sqrt((this.radius*this.radius) - (d*d));
         double Ti = Tm + Th;
         //p1 = p0 + Ti*V
-        Point p1 = ray.getP0().add(ray.getDir().scale(Ti));
+        Point p1 = ray.getPoint(Ti);
         Ti = alignZero(Tm - Th);
             if(Ti > 0){
                 // p2 = p0 + Ti*V

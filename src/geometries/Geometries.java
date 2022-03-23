@@ -38,12 +38,11 @@ public class Geometries implements Intersectable {
     public List<Point> findIntsersections(Ray ray) {
         List<Point> temp  = new LinkedList<>();
         List<Point> ans  = new LinkedList<>();
-        for (Intersectable shape:lst)
-        {
+        for (Intersectable shape:lst) {
             temp = shape.findIntsersections(ray);
-            if(temp == null)
+            if (temp == null)
                 continue;
-            else if(temp.size() == 1)
+            else if (temp.size() == 1)
                 ans.add(temp.get(0));
             else {
                 ans.add(temp.get(0));
