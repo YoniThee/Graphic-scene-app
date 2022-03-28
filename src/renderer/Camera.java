@@ -4,8 +4,15 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
+/**
+ * Camera class is create the view plane and all the rays from camera to the objects at the destination
+ *
+ * @author Shay Dopelt && Yehonatan Thee
+ */
 public class Camera {
-    private Point p;
+    private Point p0;
     private Vector vRight;
     private Vector vUp;
     private Vector vTo;
@@ -14,8 +21,8 @@ public class Camera {
     private double distance;
 
 
-    public Camera(Point p, Vector vUp, Vector vTo) {
-        this.p = p;
+    public Camera(Point p0, Vector vUp, Vector vTo) {
+        this.p0 = p0;
         this.vUp = vUp;
         this.vTo = vTo;
         double ans = vUp.dotProduct(vTo);
@@ -55,22 +62,30 @@ public class Camera {
         return this;
     }
 
-    public Ray constructRay(int nX, int nY, int j, int i){
-        Point pc = (vTo.scale(distance));
-        double Yi = -(i - ((nY-1)/2))*(height/nY);
-        double Xj = (j - ((nX-1)/2))*(width/nX);
-        Point intersectionPoint = pc;
-        if(Xj != 0)
+    public Ray constructRay(int Nx, int Ny, int j, int i){
+        Point pCenter = p0.add(vTo.scale(distance));
+        double Ry = height/Ny;
+        double Rx = width/Nx;
+        double Yi = -1 * (i - alignZero((Ny-1)/2))*Ry;
+        double Xj = (j - alignZero((Nx-1)/2))*Rx;
+        Point intersectionPoint = pCenter;
+        if(!isZero(Xj))
         {
-            intersectionPoint.add(vRight.scale(Xj));
-
+            intersectionPoint = intersectionPoint.add(vRight.scale(Xj));
+        }
+        if(!isZero(Yi))
+        {
+            intersectionPoint = intersectionPoint.add(vUp.scale(Yi));;
+        }
+        Vector dir = intersectionPoint.subtract(p0);
+        if(!isZero(dir.length())) {
+            Ray r = new Ray(p0, dir);
+            return r;
+        }
+        else{
+            throw new IllegalArgumentException();
         }
 
-        if(Yi != 0)
-        {
-            intersectionPoint.add(vUp.scale(Yi));;
-        }
-        return new Ray(p,intersectionPoint.subtract(p));
 
     }
 

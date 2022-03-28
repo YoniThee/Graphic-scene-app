@@ -21,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 	 int countIntersections(Geometry shape, Camera camera){
 		 int counter = 0;
-
-		 for(int i = 0; i< 3; i++)
+		camera = camera.setVPDistance(1).setVPSize(3,3);
+		 for(int i = 0; i < 3; i++)
 		 {
-			 for(int j = 0; j<3; j++)
+			 for(int j = 0; j <3; j++)
 			 {
-				 counter += shape.findIntsersections(camera.setVPDistance(1).setVPSize(3,3).
-						 constructRay(3,3,i,j)).size();
+				 if(shape.findIntsersections(camera.constructRay(3,3,j,i))!=null)
+					 counter += shape.findIntsersections(camera.constructRay(3,3,j,i)).size();
 			 }
 		 }
 		 return counter;
@@ -41,9 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 		//TC01:checking just one ray are intersected the sphere from camera
 		Sphere sphere1 = new Sphere(new Point(0,0,-3),1);
-		assertEquals(sphere1.findIntsersections(new Camera
-				(new Point(0,0,0), new Vector(0,1,0),new Vector(0,0,-1))
-				.setVPDistance(1).setVPSize(3,3).constructRay(3,3,1,1)).size(),2,
+		Camera camera1 = new Camera(new Point(0,0,0), new Vector(0,1,0),new Vector(0,0,-1));
+		assertEquals(countIntersections(sphere1,camera1),2,
 				"BadRay" );
 
 		//TC02: checking all view plan got intersection from camera
@@ -68,7 +67,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 		//TC05: checking the camera is look at the other side
 		Sphere sphere5 = new Sphere(new Point(0,0,1),0.5);
-		Camera camera5 = new Camera(new Point(0,0,-1), new Vector(0,1,0),new Vector(0,0,-1));
+		Camera camera5 = new Camera(new Point(0,0,0), new Vector(0,1,0),new Vector(0,0,-1));
 
 		assertEquals(countIntersections(sphere5, camera5),0, "BadRay");
 
@@ -76,22 +75,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 		//*** group tests of integrations between camera to plane
 
 		//TC06:  checking the camera got intersections with The parallel plane
-		Plane plane6 = new Plane(new Point(0,0,-2),new Point(0,10,-2),new Point(0,-10,-2));
-		Camera camera6 = new Camera(new Point(0,0,-1), new Vector(0,1,0),new Vector(0,0,-1));
+		Plane plane6 = new Plane(new Point(0,0,-2),new Vector(0,0,1));
+		Camera camera6 = new Camera(new Point(0,0,0), new Vector(0,1,0),new Vector(0,0,-1));
 
 		assertEquals(countIntersections(plane6, camera6), 9, "BadRay");
 
 
 		//TC07:  checking the camera got intersections with The tilted plane
-		Plane plane7 = new Plane(new Point(0,0,-2),new Point(0,5,-1.9),new Point(0,-5,-2.1));
-		Camera camera7 = new Camera(new Point(0,0,-1), new Vector(0,1,0),new Vector(0,0,-1));
+		Plane plane7 = new Plane(new Point(0,0,-2),new Vector(0,0.1,1));
+		Camera camera7 = new Camera(new Point(0,0,1), new Vector(0,1,0),new Vector(0,0,-1));
 
 		assertEquals(countIntersections(plane7, camera7), 9, "BadRay");
 
 
 		//TC08:  checking the camera got intersections with other tilted plane
 		Plane plane8 = new Plane(new Point(0,0,-2),new Vector(1,1,0));
-		Camera camera8 = new Camera(new Point(0,0,-1), new Vector(0,1,0),new Vector(0,0,-1));
+		Camera camera8 = new Camera(new Point(0,0,2), new Vector(0,1,0),new Vector(0,0,-1));
 
 		assertEquals(countIntersections(plane8, camera8), 6, "BadRay");
 

@@ -53,7 +53,7 @@ class CylinderTest {
         assertEquals(result,List.of(new Point(0,-1.5,2),new Point(0,3.5,2))
                 ,"wrong intersect points");
 
-        //TC02: Ray from outside under the base intersect 2 sides(2 points)
+        //TC02: Ray from outside under the base intersect also sides(2 points)
         result = cylinder.findIntsersections(new Ray(new Point(0,-4,0),new Vector(0,8,2)));
         assertEquals(result.size(),2,"wrong number of points");
         assertEquals(result,List.of(new Point(0,0,1),new Point(0,3.5,1.75)),
