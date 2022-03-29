@@ -41,23 +41,25 @@ public class Sphere implements Geometry{
         double d = Math.sqrt(u.lengthSquared() - (Tm*Tm));
         if(d >= this.radius)
             return null;
-        else
-        {
-        // Th = sqrt(r^2-d^2)
-        double Th = Math.sqrt((this.radius*this.radius) - (d*d));
-        double Ti = Tm + Th;
-        //p1 = p0 + Ti*V
-        Point p1 = ray.getPoint(Ti);
-        Ti = alignZero(Tm - Th);
-            if(Ti > 0){
-                // p2 = p0 + Ti*V
-                Point p2 = ray.getP0().add(ray.getDir().scale(Ti));
-                return List.of(p1,p2);
+        else {
+            // Th = sqrt(r^2-d^2)
+            double Th = Math.sqrt((this.radius * this.radius) - (d * d));
+            double Ti = Tm + Th;
+            // only if t > 0
+            if (Ti > 0) {
+                //p1 = p0 + Ti*V
+                Point p1 = ray.getPoint(Ti);
+                Ti = alignZero(Tm - Th);
+                if (Ti > 0) {
+                    // p2 = p0 + Ti*V
+                    Point p2 = ray.getP0().add(ray.getDir().scale(Ti));
+                    return List.of(p1, p2);
+                } else {
+                    return List.of(p1);
+                }
             }
-            else {
-                return List.of(p1);
-            }
+            else
+                return null;
         }
-
     }
 }

@@ -46,9 +46,9 @@ class SphereTest {
         assertEquals(List.of(p1,p2),result,"Ray crosses sphere");
 
         // TC03: Ray starts inside the sphere (1 point)
-        Ray insideRay = new Ray(new Point(2,3,2.5),new Vector(2,1,4));
+        Ray insideRay = new Ray(new Point(1,3,2.5),new Vector(2,1,4));
         assertEquals(sphere1.findIntsersections(insideRay),
-                List.of(new Point(1.6848015009355648,2.8424007504677826,1.8696030018711296)),
+                List.of(new Point(1.1476032795495952,3.0738016397747976,2.7952065590991904)),
                 "Ray from inside point is wrong calculate");
         // TC04: Ray starts after the sphere (0 points)
         assertNull(sphere1.findIntsersections(new Ray(new Point(-5,-4,-3),new Vector(-2,-15,-6))),
