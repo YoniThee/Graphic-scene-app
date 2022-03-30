@@ -14,8 +14,10 @@ class ImageWriterTest {
     @Test
     /**Test method for {@link ImageWriter.WriteToImage}*/
     void testWriteToImage() {
-        primitives.Color niceBlue = new Color(40.0,40.0,85.0);
-        ImageWriter image = new ImageWriter("testImage",10,16).writePixel(500,800, niceBlue );
+        primitives.Color niceBlue = new primitives.Color(0.0,0.0,85.0);
+        ImageWriter image =  new ImageWriter("testImage",500,800);
+        image.writePixel(10,16, niceBlue );
+        image.writeToImage();
     }
 
     @Test
