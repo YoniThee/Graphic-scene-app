@@ -66,8 +66,8 @@ public class Camera {
         Point pCenter = p0.add(vTo.scale(distance));
         double Ry = height/Ny;
         double Rx = width/Nx;
-        double Yi = -1 * (i - alignZero((Ny-1)/2))*Ry;
-        double Xj = (j - alignZero((Nx-1)/2))*Rx;
+        double Yi = -1 * (i - alignZero((double)(Ny-1)/2))*Ry;
+        double Xj = (j - alignZero((double)(Nx-1)/2))*Rx;
         Point intersectionPoint = pCenter;
         if(!isZero(Xj))
         {
