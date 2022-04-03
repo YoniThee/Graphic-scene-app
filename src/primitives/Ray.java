@@ -1,5 +1,6 @@
 package primitives;
 
+import java.util.List;
 import java.util.Objects;
 /*
 * This class will serve some shapes
@@ -26,6 +27,21 @@ public class Ray {
         return dir;
     }
 
+    public Point findClosestPoint(List<Point> lst){
+       if(lst.isEmpty())
+           return null;
+       Point closest = lst.get(0);
+       double tempDistance = closest.distanceSquared(p0);
+       for (Point p:lst)
+       {
+            if(tempDistance > p.distanceSquared(p0))
+            {
+                tempDistance = p.distanceSquared(p0);
+                closest = p;
+            }
+       }
+       return closest;
+    }
     @Override
     public String toString() {
         return "Ray{" +

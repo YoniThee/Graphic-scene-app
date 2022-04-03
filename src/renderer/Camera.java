@@ -1,13 +1,17 @@
 package renderer;
 
+import primitives.Color;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.MissingResourceException;
+
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 /**
- * Camera class is create the view plane and all the rays from camera to the objects at the destination
+ * Camera class is create the view plane and all the rays from camera to the objects at the destination.
+ * the class also can crate pictures by using imageWriter class
  *
  * @author Shay Dopelt && Yehonatan Thee
  */
@@ -19,6 +23,8 @@ public class Camera {
     private double height;
     private double width;
     private double distance;
+    private ImageWriter imageWriter;
+    private RayTracerBase rayTracerBase;
 
 
     public Camera(Point p0, Vector vUp, Vector vTo) {
@@ -60,6 +66,35 @@ public class Camera {
     public Camera setVPDistance(double distance){
         this.distance = distance;
         return this;
+    }
+
+    public Camera setImageWriter(ImageWriter image){
+        imageWriter = image;
+        return this;
+    }
+
+    public Camera setRayTracer(RayTracerBase ray){
+        rayTracerBase = ray;
+        return this;
+    }
+
+    public void renderImage(){
+        if(p0 == null || vRight == null || vTo == null || vUp == null || height == 0 || width == 0
+        || distance == 0 || rayTracerBase == null || imageWriter == null){
+            throw new MissingResourceException("one of the propertis is null/empty","Camera","");
+        }
+        throw  new UnsupportedOperationException();
+    }
+
+    public void printGrid(int interval, Color color){
+
+    }
+
+    public void writeToImage(){
+        if(imageWriter == null)
+            throw new MissingResourceException("This image is missing parameter","Camera","");
+        else
+            imageWriter.writeToImage();
     }
 
     public Ray constructRay(int Nx, int Ny, int j, int i){

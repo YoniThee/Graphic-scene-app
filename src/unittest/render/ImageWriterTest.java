@@ -2,6 +2,7 @@ package unittest.render;
 
 import org.junit.jupiter.api.Test;
 import primitives.Color;
+import primitives.Point;
 import renderer.ImageWriter;
 import primitives.*;
 
@@ -9,15 +10,21 @@ import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ImageWriterTest {
+/*
+ * Testing ImageWriter
+ * @author Shay Dopelt && Yheonatan Thee
+ * */
 
+class ImageWriterTest {
+    /**
+     * Test method for {@link ImageWriter}.
+     */
     @Test
     /**Test method for {@link ImageWriter.WriteToImage}*/
     void testWriteToImage() {
-        //primitives.Color niceBlue = new primitives.Color(0.0,0.0,85.0);
-        java.awt.Color niceBlue = new java.awt.Color(0,0,85);
+        primitives.Color niceBlue = new primitives.Color(0.0,0.0,85.0);
         ImageWriter image =  new ImageWriter("testImage",500,800);
-        image = image.writePixel(10,16, new Color(niceBlue) );
+        image.writePixel(10,16, niceBlue );
         image.writeToImage();
     }
 

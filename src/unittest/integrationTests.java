@@ -13,7 +13,7 @@ import renderer.Camera;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Testing Camera Class
+ * Testing integration between all the Class
  *
  * @author Dan
  *
