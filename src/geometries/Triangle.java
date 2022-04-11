@@ -13,7 +13,7 @@ public class Triangle extends Polygon{
 
 
     @Override
-    public List<Point> findIntsersections(Ray ray) {
+    public List<GeoPoint> findIntsersections(Ray ray) {
 // A, B, C are triangle's vertices
         Point A = this.vertices.get(0);
         Point B = this.vertices.get(1);

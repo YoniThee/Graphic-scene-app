@@ -10,8 +10,7 @@ import java.util.List;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
-public class Plane implements Geometry
-{
+public class Plane extends Geometry {
     private Point p0;
     private Vector normal;
 
@@ -44,7 +43,7 @@ public class Plane implements Geometry
 
 
     @Override
-    public List<Point> findIntsersections(Ray ray) {
+    public List<GeoPoint> findIntsersections(Ray ray) {
 
         Vector rayDir = ray.getDir();
         double nv = rayDir.dotProduct(normal);
@@ -56,8 +55,16 @@ public class Plane implements Geometry
         double t = alignZero((p0.subtract(ray.getP0())).dotProduct(normal)/nv);
         if(t>0)
         {
-            return List.of(ray.getPoint(t));
+            GeoPoint geo = new GeoPoint();
+            geo.point = ray.getPoint(t);
+            geo.geometry = ;
+            return List.of(geo);
         }
         else return null;
+    }
+
+    @Override
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+        return null;
     }
 }

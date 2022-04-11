@@ -1,4 +1,4 @@
-package unittest.render;
+package renderer;
 
 import primitives.Color;
 import primitives.Point;

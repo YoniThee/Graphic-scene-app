@@ -9,7 +9,7 @@ import java.util.List;
 
 import static primitives.Util.alignZero;
 
-public class Sphere implements Geometry{
+public class Sphere extends Geometry {
     Point center;
     double radius;
 
@@ -31,7 +31,7 @@ public class Sphere implements Geometry{
         return point.subtract(center).normalize();}
 
     @Override
-    public List<Point> findIntsersections(Ray ray)
+        public List<GeoPoint> findIntsersections(Ray ray)
     {
         // u = Vector(O-P0)
         Vector u = center.subtract(ray.getP0());
@@ -61,5 +61,10 @@ public class Sphere implements Geometry{
             else
                 return null;
         }
+    }
+
+    @Override
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+        return null;
     }
 }
