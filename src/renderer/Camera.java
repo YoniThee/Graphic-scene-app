@@ -7,6 +7,7 @@ import primitives.Vector;
 
 import java.util.MissingResourceException;
 
+import static java.awt.Color.RED;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 /**
@@ -81,12 +82,35 @@ public class Camera {
     public void renderImage(){
         if(p0 == null || vRight == null || vTo == null || vUp == null || height == 0 || width == 0
         || distance == 0 || rayTracerBase == null || imageWriter == null){
-            throw new MissingResourceException("one of the propertis is null/empty","Camera","");
+            throw new MissingResourceException("one of the properties is null/empty","Camera","");
         }
-        throw  new UnsupportedOperationException();
+        for (int i = 0; i < imageWriter.getNx(); i++) {
+            for (int j = 0; j < imageWriter.getNy(); j++) {
+                Ray ray = constructRay(imageWriter.getNx(),imageWriter.getNy(),j,i);
+                Color color = castRay(ray);
+                imageWriter.writePixel(i,j,color);
+            }
+        }
+        //throw new UnsupportedOperationException();
+    }
+
+    private Color castRay(Ray ray) {
+        return rayTracerBase.traceRay(ray);
     }
 
     public void printGrid(int interval, Color color){
+        if(imageWriter == null)
+            throw new MissingResourceException("this image not initialized yet","Camera","");
+        for (int i = 0; i <imageWriter.getNx() ; i+=interval) {
+            for (int j = 0; j < imageWriter.getNy(); j++) {
+                imageWriter.writePixel(i, j, color);
+            }
+        }
+        for (int i = 0; i <imageWriter.getNx() ; i++) {
+            for (int j = 0; j < imageWriter.getNy(); j+=interval) {
+                imageWriter.writePixel(i, j, color);
+            }
+        }
 
     }
 
