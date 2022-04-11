@@ -50,8 +50,9 @@ class TriangleTest {
 
         // ============ Equivalence Partitions Tests ==============
         // TC01: A point inside the triangle
-        assertEquals(triangle.findIntsersections(new Ray(new Point(1,3,0.5),new Vector(0,-1,0))),
-                List.of(new Point(1,2,0.5)),"A point inside the triangle");
+        assertEquals( List.of(new Point(1,2,0.5)),
+                triangle.findIntsersections(new Ray(new Point(1,3,0.5),new Vector(0,-1,0))),
+                "A point inside the triangle");
 
         // TC02: A point in front of one of the ribs
         assertNull(triangle.findIntsersections(new Ray(new Point(0,2,0.5),new Vector(0,1,0.25))),"A point in front of one of the ribs");

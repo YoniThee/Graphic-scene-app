@@ -69,7 +69,7 @@ class PointTest {
         Point p1 = new Point(3,3,3);
         Point p2 = new Point(1,1,1);
         double Result = 3.4641016151377544;
-        assertEquals(p1.distance(p1,p2),Result,"distance dosent working good");
+        assertEquals(Result,p1.distance(p1,p2),"distance dosent working good");
 
         /**
          * Test method for {@link primitives.Point#distance(Point p1,Point p2)}.

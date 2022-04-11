@@ -27,17 +27,17 @@ class RayTest {
         Point p3 = new Point(0,6,0);
         // ============ Equivalence Partitions Tests ==============
         //TC01: The closest point is in the middle of the list
-        assertEquals(r.findClosestPoint(List.of(p1,p2,p3)),p2,"Wrong returned point");
+        assertEquals(p2,r.findClosestPoint(List.of(p1,p2,p3)),"Wrong returned point");
 
         // =============== Boundary Values Tests ==================
         //TC10: No point in the list
         assertNull(r.findClosestPoint(List.of()),"This list is empty - no one point supposed to returned");
 
         //TC11: The first point at list is the closest
-        assertEquals(r.findClosestPoint(List.of(p2,p1,p3)),p2,"Wrong returned point");
+        assertEquals(p2,r.findClosestPoint(List.of(p2,p1,p3)),"Wrong returned point");
 
         //TC12: The last point at list is the closest
-        assertEquals(r.findClosestPoint(List.of(p3,p1,p2)),p2,"Wrong returned point");
+        assertEquals(p2,r.findClosestPoint(List.of(p3,p1,p2)),"Wrong returned point");
 
     }
 }

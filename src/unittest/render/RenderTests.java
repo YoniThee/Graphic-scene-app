@@ -37,7 +37,7 @@ public class RenderTests {
 				new Triangle(new Point(100, 0, -100), new Point(0, -100, -100),
 						new Point(100, -100, -100))); // down
 																													// right
-		Camera camera = new Camera(new Point(0,0,0), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
+		Camera camera = new Camera(new Point(0,0,-200), new Vector(0, -1, 0), new Vector(0, 0, +1)) //
 				.setVPDistance(100) //
 				.setVPSize(500, 500) //
 				.setImageWriter(new ImageWriter("base render test", 1000, 1000))				

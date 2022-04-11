@@ -42,7 +42,7 @@ class TubeTest {
     void testFindIntsersections() {
         Tube tube = new Tube(2.5,new Ray(new Point(0,1,1),new Vector(0,1,3)));
         // ============ Equivalence Partitions Tests ==============
-        //TC01: Ray from outside intersect 2 sides(2 point)
+        //TC01: Ray from outside intersect 2 si des(2 point)
         List<Point> result = tube.findIntsersections(new Ray(new Point(0,-4,2),new Vector(0,8,0)));
         assertEquals(result.size(),2,"wrong number of points");
         assertEquals(result,List.of(new Point(0,-1.5,2),new Point(0,3.5,2))

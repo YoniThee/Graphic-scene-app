@@ -58,8 +58,9 @@ class PlaneTest {
 
 
         // TC02: A Ray below the plain, towards the top
-        assertEquals(plane.findIntsersections(new Ray(new Point(2,2,1),new Vector(-2,-2,1))),
-                List.of(new Point(0,0,2)),"The Ray below the plane, towards the tope");
+        assertEquals( List.of(new Point(0,0,2)),
+                plane.findIntsersections(new Ray(new Point(2,2,1),new Vector(-2,-2,1))),
+               "The Ray below the plane, towards the tope");
 
 
 
@@ -74,8 +75,9 @@ class PlaneTest {
                 "Ray's line is contained in a plane\"");
 
         // TC13: Perpendicular Ray to the plane (point below the plane)
-        assertEquals(plane.findIntsersections(new Ray(new Point(1,1,1),new Vector(0,0,1))),
-                List.of(new Point(1,1,2)),"The Ray is perpendicular to the plane\"");
+        assertEquals( List.of(new Point(1,1,2)),
+                plane.findIntsersections(new Ray(new Point(1,1,1),new Vector(0,0,1))),
+               "The Ray is perpendicular to the plane\"");
 
         // TC14: Perpendicular Ray to the plane (point on the plane)
         assertNull(plane.findIntsersections(new Ray(new Point(1,1,2),new Vector(0,0,1))),

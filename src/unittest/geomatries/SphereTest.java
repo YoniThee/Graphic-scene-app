@@ -25,8 +25,8 @@ class SphereTest {
         Point center = new Point(1,1,1);
         Point p = new Point(2,3,4);
         Sphere sphere = new Sphere(center,2);
-            assertEquals(sphere.getNormal(p), new primitives.Vector(0.2672612419124244,0.5345224838248488,0.8017837257372732),
-                    "The normal vector is wrong");
+            assertEquals(new primitives.Vector(0.2672612419124244,0.5345224838248488,0.8017837257372732),
+                    sphere.getNormal(p), "The normal vector is wrong");
         }
 
     @Test
@@ -43,13 +43,14 @@ class SphereTest {
         assertEquals(2,result.size(),"Wrong number of points");
         if (result.get(0).getX()>result.get(1).getX())
             result=List.of(result.get(1),result.get(0));
-        assertEquals(List.of(p1,p2),result,"Ray crosses sphere");
+        assertEquals(result,List.of(p1,p2),"Ray crosses sphere");
 
         // TC03: Ray starts inside the sphere (1 point)
         Ray insideRay = new Ray(new Point(1,3,2.5),new Vector(2,1,4));
-        assertEquals(sphere1.findIntsersections(insideRay),
-                List.of(new Point(1.1476032795495952,3.0738016397747976,2.7952065590991904)),
+        assertEquals(List.of(new Point(1.1476032795495952,3.0738016397747976,2.7952065590991904)),
+                sphere1.findIntsersections(insideRay),
                 "Ray from inside point is wrong calculate");
+
         // TC04: Ray starts after the sphere (0 points)
         assertNull(sphere1.findIntsersections(new Ray(new Point(-5,-4,-3),new Vector(-2,-15,-6))),
                 "Ray outside, never crosses the sphere is wrong ");
