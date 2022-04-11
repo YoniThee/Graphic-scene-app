@@ -8,6 +8,8 @@ import primitives.*;
 
 import java.awt.*;
 
+import static java.awt.Color.RED;
+import static java.awt.Color.YELLOW;
 import static org.junit.jupiter.api.Assertions.*;
 
 /*
@@ -22,10 +24,24 @@ class ImageWriterTest {
     @Test
     /**Test method for {@link ImageWriter.WriteToImage}*/
     void testWriteToImage() {
-        primitives.Color niceBlue = new primitives.Color(0.0,0.0,85.0);
-        ImageWriter image =  new ImageWriter("testImage",500,800);
-        image.writePixel(10,16, niceBlue );
-        image.writeToImage();
+        ImageWriter imageWriter =  new ImageWriter("testImage",800,500);
+        for (int i = 0; i <imageWriter.getNx() ; i++) {
+            for (int j = 0; j < imageWriter.getNy(); j++) {
+                imageWriter.writePixel(i,j, new Color(YELLOW) );
+            }
+        }
+        int interval = 50;
+        for (int i = 0; i <imageWriter.getNx() ; i+=interval) {
+            for (int j = 0; j < imageWriter.getNy(); j++) {
+                imageWriter.writePixel(i, j, new Color(RED));
+            }
+        }
+        for (int i = 0; i <imageWriter.getNx() ; i++) {
+            for (int j = 0; j < imageWriter.getNy(); j+=interval) {
+                imageWriter.writePixel(i, j, new Color(RED));
+            }
+        }
+        imageWriter.writeToImage();
     }
 
     @Test
