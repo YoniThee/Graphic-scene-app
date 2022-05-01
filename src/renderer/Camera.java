@@ -79,7 +79,7 @@ public class Camera {
         return this;
     }
 
-    public void renderImage(){
+    public Camera renderImage(){
         if(p0 == null || vRight == null || vTo == null || vUp == null || height == 0 || width == 0
         || distance == 0 || rayTracerBase == null || imageWriter == null){
             throw new MissingResourceException("one of the properties is null/empty","Camera","");
@@ -92,6 +92,7 @@ public class Camera {
                 imageWriter.writePixel(i,j,color);
             }
         }
+        return this;
         //throw new UnsupportedOperationException();
     }
 

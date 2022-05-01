@@ -13,4 +13,7 @@ public class AmbientLight extends Light {
         super(Color.BLACK);
     }
 
+
+
+
 }
