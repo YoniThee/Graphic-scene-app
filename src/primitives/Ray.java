@@ -1,7 +1,13 @@
 package primitives;
 
+import geometries.Intersectable;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static geometries.Intersectable.*;
+
 /*
 * This class will serve some shapes
 * */
@@ -27,20 +33,10 @@ public class Ray {
         return dir;
     }
 
-    public Point findClosestPoint(List<Point> lst){
-       if(lst.isEmpty())
-           return null;
-       Point closest = lst.get(0);
-       double tempDistance = closest.distanceSquared(p0);
-       for (Point p:lst)
-       {
-            if(tempDistance > p.distanceSquared(p0))
-            {
-                tempDistance = p.distanceSquared(p0);
-                closest = p;
-            }
-       }
-       return closest;
+    public Point findClosestPoint(List<Point> intersections){
+        return intersections.isEmpty() ? null
+                : findClosestGeoPoint(intersections.stream().map(p -> new GeoPoint(null, p)).toList()
+        ).point;
     }
     @Override
     public String toString() {
@@ -58,4 +54,19 @@ public class Ray {
         return Objects.equals(p0, ray.p0) && Objects.equals(dir, ray.dir);
     }
 
+    public GeoPoint findClosestGeoPoint(List<GeoPoint> intersections) {
+        if(intersections.isEmpty())
+            return null;
+        GeoPoint closest = intersections.get(0);
+        double tempDistance = closest.point.distanceSquared(p0);
+        for (GeoPoint gp:intersections)
+        {
+            if(tempDistance > gp.point.distanceSquared(p0))
+            {
+                tempDistance = gp.point.distanceSquared(p0);
+                closest = gp;
+            }
+        }
+        return closest;
+    }
 }

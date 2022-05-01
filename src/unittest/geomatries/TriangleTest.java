@@ -1,6 +1,5 @@
 package unittest.geomatries;
 
-import geometries.Cylinder;
 import geometries.Plane;
 import geometries.Triangle;
 import org.junit.jupiter.api.Test;

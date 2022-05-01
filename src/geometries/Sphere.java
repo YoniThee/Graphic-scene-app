@@ -4,7 +4,6 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static primitives.Util.alignZero;
@@ -31,7 +30,7 @@ public class Sphere extends Geometry {
         return point.subtract(center).normalize();}
 
     @Override
-        public List<GeoPoint> findIntsersections(Ray ray)
+        protected List<GeoPoint> findGeoIntsersectionsHelper(Ray ray)
     {
         // u = Vector(O-P0)
         Vector u = center.subtract(ray.getP0());
@@ -53,9 +52,9 @@ public class Sphere extends Geometry {
                 if (Ti > 0) {
                     // p2 = p0 + Ti*V
                     Point p2 = ray.getP0().add(ray.getDir().scale(Ti));
-                    return List.of(p1, p2);
+                    return List.of(new GeoPoint(this,p1),new GeoPoint(this,p2));
                 } else {
-                    return List.of(p1);
+                    return List.of(new GeoPoint(this,p1));
                 }
             }
             else
@@ -63,8 +62,4 @@ public class Sphere extends Geometry {
         }
     }
 
-    @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
-        return null;
-    }
 }

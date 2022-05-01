@@ -1,7 +1,6 @@
 package unittest.geomatries;
 
 import geometries.Sphere;
-import geometries.Tube;
 import org.junit.jupiter.api.Test;
 import primitives.*;
 import java.util.List;
