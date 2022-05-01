@@ -7,11 +7,28 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class Intersectable{
+
+    public List<Point> findIntsersections(Ray ray) {
+        List<GeoPoint> geoList = findGeoIntersections(ray);
+        return geoList == null ? null
+                : geoList.stream().map(gp -> gp.point). toList();
+
+    }
+
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
+        return findGeoIntsersectionsHelper(ray);
+    }
+
     /*This struct is PDS for better use at the intersectable*/
     public static class GeoPoint {
         //this struct got 2 properties: which kind of shape we are and which specific point
         public Geometry geometry;
         public Point point;
+
+        public GeoPoint(Geometry geometry, Point point) {
+            this.geometry = geometry;
+            this.point = point;
+        }
 
         @Override
         public boolean equals(Object o) {
@@ -30,8 +47,7 @@ public abstract class Intersectable{
         }
     }
 
-    public List<GeoPoint> findGeoIntsersections(Ray ray) {return findGeoIntersectionsHelper(ray);}
-    protected abstract List<GeoPoint>findGeoIntersectionsHelper(Ray ray);
+    protected abstract List<GeoPoint> findGeoIntsersectionsHelper(Ray ray);
 
 
 

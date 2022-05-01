@@ -90,15 +90,9 @@ public class Polygon extends Geometry {
 	}
 
 	@Override
-	public List<GeoPoint> findGeoIntsersections(Ray ray) {
-
-
-
+	protected List<GeoPoint> findGeoIntsersectionsHelper(Ray ray) {
 		return null;
 	}
 
-	@Override
-	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
-		return null;
-	}
+
 }

@@ -1,5 +1,6 @@
 package geometries;
 
+import primitives.Point;
 import primitives.Ray;
 
 import java.util.LinkedList;
@@ -34,11 +35,11 @@ public class Geometries extends Intersectable {
         }
     }
     @Override
-    public List<GeoPoint> findGeoIntsersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntsersectionsHelper(Ray ray) {
         List<GeoPoint> temp  = new LinkedList<>();
         List<GeoPoint> ans  = new LinkedList<>();
         for (Intersectable shape:lst) {
-            temp = shape.findGeoIntsersections(ray);
+            temp = shape.findGeoIntsersectionsHelper(ray);
             if (temp == null)
                 continue;
             else if (temp.size() == 1)
@@ -51,13 +52,5 @@ public class Geometries extends Intersectable {
         return ans ;
     }
 
-    @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
-        List<GeoPoint> ans = new LinkedList<GeoPoint>();
-        List<GeoPoint> temp  = new LinkedList<GeoPoint>();
 
-        for (Intersectable shape:lst) {
-           temp = shape.findGeoIntsersections(ray);
-        }
-    }
 }

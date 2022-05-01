@@ -37,13 +37,8 @@ public class Plane extends Geometry {
         return normal;
     }
 
-
-
-
-
-
     @Override
-    public List<GeoPoint> findGeoIntsersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntsersectionsHelper(Ray ray) {
 
         Vector rayDir = ray.getDir();
         double nv = rayDir.dotProduct(normal);
@@ -55,16 +50,10 @@ public class Plane extends Geometry {
         double t = alignZero((p0.subtract(ray.getP0())).dotProduct(normal)/nv);
         if(t>0)
         {
-            GeoPoint geo = new GeoPoint();
-            geo.point = ray.getPoint(t);
-            geo.geometry = ;
-            return List.of(geo);
+            return List.of(new GeoPoint(this,ray.getPoint(t)));
         }
         else return null;
     }
 
-    @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
-        return null;
-    }
+
 }
