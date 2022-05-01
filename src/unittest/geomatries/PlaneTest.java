@@ -40,7 +40,7 @@ class PlaneTest {
 
 
     /**
-     * Test method for {@link geometries.Plane#findIntsersections(primitives.Ray)}.///////////////////////////
+     * Test method for {@link geometries.Plane#findGeoIntsersections(primitives.Ray)}.///////////////////////////
      */
     @Test
 
@@ -54,12 +54,12 @@ class PlaneTest {
 
         // ============ Equivalence Partitions Tests ==============
         // TC01: A Ray above the plain, towards the top
-        assertNull(plane.findIntsersections(new Ray(new Point(1,1,3),new Vector(1,1,4))),"Ray's line out of plane");
+        assertNull(plane.findGeoIntsersections(new Ray(new Point(1,1,3),new Vector(1,1,4))),"Ray's line out of plane");
 
 
         // TC02: A Ray below the plain, towards the top
         assertEquals( List.of(new Point(0,0,2)),
-                plane.findIntsersections(new Ray(new Point(2,2,1),new Vector(-2,-2,1))),
+                plane.findGeoIntsersections(new Ray(new Point(2,2,1),new Vector(-2,-2,1))),
                "The Ray below the plane, towards the tope");
 
 
@@ -67,33 +67,33 @@ class PlaneTest {
         // ========== Boundary Values Tests ==================
 
         // TC11: Ray parallel to the plane
-        assertNull(plane.findIntsersections(new Ray(new Point(1,1,1),new Vector(1,1,0))),
+        assertNull(plane.findGeoIntsersections(new Ray(new Point(1,1,1),new Vector(1,1,0))),
                 "Ray's line out of plane");
 
         // TC12: A Ray is contained in a plane
-        assertNull(plane.findIntsersections(new Ray(new Point(0,2,2),new Vector(-2,-2,0))),
+        assertNull(plane.findGeoIntsersections(new Ray(new Point(0,2,2),new Vector(-2,-2,0))),
                 "Ray's line is contained in a plane\"");
 
         // TC13: Perpendicular Ray to the plane (point below the plane)
         assertEquals( List.of(new Point(1,1,2)),
-                plane.findIntsersections(new Ray(new Point(1,1,1),new Vector(0,0,1))),
+                plane.findGeoIntsersections(new Ray(new Point(1,1,1),new Vector(0,0,1))),
                "The Ray is perpendicular to the plane\"");
 
         // TC14: Perpendicular Ray to the plane (point on the plane)
-        assertNull(plane.findIntsersections(new Ray(new Point(1,1,2),new Vector(0,0,1))),
+        assertNull(plane.findGeoIntsersections(new Ray(new Point(1,1,2),new Vector(0,0,1))),
               "The Ray is perpendicular to the plane\"");
 
         // TC15: Perpendicular Ray to the plane (point above the plane)
-        assertNull(plane.findIntsersections(new Ray(new Point(1,1,3),new Vector(0,0,1))),
+        assertNull(plane.findGeoIntsersections(new Ray(new Point(1,1,3),new Vector(0,0,1))),
                 "The Ray is perpendicular to the plane\"");
 
         // TC16: Ray on the plain, but not perpendicular
-        assertNull(plane.findIntsersections(new Ray(new Point(0,2,2),new Vector(1,-1,2))),
+        assertNull(plane.findGeoIntsersections(new Ray(new Point(0,2,2),new Vector(1,-1,2))),
                 "The Ray on the plain, but not perpendicular\"");
 
         // TC17: A Ray on the plain, from its starting point
         try {
-            assertNull(plane.findIntsersections(new Ray(new Point(2,0,2),new Vector(-1,1,2))),
+            assertNull(plane.findGeoIntsersections(new Ray(new Point(2,0,2),new Vector(-1,1,2))),
                     "The Ray on the plain, but not perpendicular\"");
         }
         catch (IllegalArgumentException rayFromCenter){}
