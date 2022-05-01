@@ -2,9 +2,7 @@ package geometries;
 
 import primitives.Point;
 import primitives.Ray;
-import primitives.Vector;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,7 +30,7 @@ public abstract class Intersectable{
         }
     }
 
-    public abstract List<GeoPoint> findIntsersections(Ray ray);
+    public List<GeoPoint> findGeoIntsersections(Ray ray) {return findGeoIntersectionsHelper(ray);}
     protected abstract List<GeoPoint>findGeoIntersectionsHelper(Ray ray);
 
 

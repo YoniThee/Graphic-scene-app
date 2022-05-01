@@ -90,7 +90,7 @@ public class Polygon extends Geometry {
 	}
 
 	@Override
-	public List<GeoPoint> findIntsersections(Ray ray) {
+	public List<GeoPoint> findGeoIntsersections(Ray ray) {
 
 
 

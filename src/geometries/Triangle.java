@@ -13,7 +13,7 @@ public class Triangle extends Polygon{
 
 
     @Override
-    public List<GeoPoint> findIntsersections(Ray ray) {
+    public List<GeoPoint> findGeoIntsersections(Ray ray) {
 // A, B, C are triangle's vertices
         Point A = this.vertices.get(0);
         Point B = this.vertices.get(1);
@@ -29,7 +29,7 @@ public class Triangle extends Polygon{
         Vector v = ray.getDir();
         if((v.dotProduct(n1)>0 && v.dotProduct(n2)>0 && v.dotProduct(n3)>0)
                 ||(v.dotProduct(n1)<0 && v.dotProduct(n2)<0 && v.dotProduct(n3)<0))
-            return  planeContainingTriangle.findIntsersections(ray);
+            return  planeContainingTriangle.findGeoIntsersections(ray);
 
         return null;
     }

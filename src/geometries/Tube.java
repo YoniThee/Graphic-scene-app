@@ -28,7 +28,7 @@ public class Tube extends Geometry {
     }
 
     @Override
-    public List<Point> findIntsersections(Ray ray) {
+    public List<Point> findGeoIntsersections(Ray ray) {
         return List.of();
     }
 }

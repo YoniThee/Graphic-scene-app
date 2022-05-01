@@ -31,7 +31,7 @@ public class Sphere extends Geometry {
         return point.subtract(center).normalize();}
 
     @Override
-        public List<GeoPoint> findIntsersections(Ray ray)
+        public List<GeoPoint> findGeoIntsersections(Ray ray)
     {
         // u = Vector(O-P0)
         Vector u = center.subtract(ray.getP0());

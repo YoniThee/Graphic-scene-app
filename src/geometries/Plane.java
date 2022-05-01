@@ -43,7 +43,7 @@ public class Plane extends Geometry {
 
 
     @Override
-    public List<GeoPoint> findIntsersections(Ray ray) {
+    public List<GeoPoint> findGeoIntsersections(Ray ray) {
 
         Vector rayDir = ray.getDir();
         double nv = rayDir.dotProduct(normal);
