@@ -19,7 +19,7 @@ public class Triangle extends Polygon{
         Point B = this.vertices.get(1);
         Point C = this.vertices.get(2);
         Plane planeContainingTriangle = new Plane(A, B, C);
-        planeContainingTriangle.setEmission(this.getEmission());
+        planeContainingTriangle.setEmission(this.getEmission()).setMaterial(this.getMaterial());
 
         Vector v1 = vertices.get(0).subtract(ray.getP0());
         Vector v2 = vertices.get(1).subtract(ray.getP0());

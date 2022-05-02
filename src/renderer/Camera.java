@@ -28,16 +28,14 @@ public class Camera {
     private RayTracerBase rayTracerBase;
 
 
-    public Camera(Point p0, Vector vUp, Vector vTo) {
+    public Camera(Point p0, Vector vTo, Vector vUp) {
         this.p0 = p0;
-        this.vUp = vUp;
-        this.vTo = vTo;
+        this.vUp = vUp.normalize();
+        this.vTo = vTo.normalize();
         double ans = vUp.dotProduct(vTo);
         try {
             if (ans == 0) {
-                vRight = vUp.crossProduct(vTo).normalize();
-                this.vUp.normalize();
-                this.vTo.normalize();
+                vRight = this.vTo.crossProduct(this.vUp);
             }
             //if the tow vectors is not vertical, throw exception.
             else vRight = new Vector(0, 0, 0);

@@ -45,6 +45,10 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
     private Double3 calcDiffusive(Material material, double nl) {
+        if (nl < 0)
+        {
+            nl = -nl;
+        }
         return material.kD.scale(nl);
     }
 

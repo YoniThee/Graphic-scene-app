@@ -24,19 +24,19 @@ class GeometriesTest {
         geometries.add(triangle,sphere,sphere2);
         // ============ Equivalence Partitions Tests ==============
         //TC01:Some shapes is intersected but other isn't
-        assertEquals(1,geometries.findGeoIntsersections(ray).size(),"Wrong calculate of intersection");
+        assertEquals(1,geometries.findIntsersections(ray).size(),"Wrong calculate of intersection");
 
         // =============== Boundary Values Tests ==================
         //TC11: One collection of shapes is empty
-        assertEquals(0, geometries.findGeoIntsersections(new Ray(new Point(3,3,3),new Vector(0,0,1))).size(),
+        assertEquals(0, geometries.findIntsersections(new Ray(new Point(3,3,3),new Vector(0,0,1))).size(),
                 "Wrong calculate of intersection");
         //TC12: No one shape is got intersection
-        assertEquals(0,geometries.findGeoIntsersections(new Ray(new Point(3,3,3),new Vector(0,0,1))).size(),
+        assertEquals(0,geometries.findIntsersections(new Ray(new Point(3,3,3),new Vector(0,0,1))).size(),
                 "Wrong calculate of intersection");
         //TC13: Only one shape is have intersection
-        assertEquals(1,geometries.findGeoIntsersections(ray).size(),"Wrong calculate of intersection");
+        assertEquals(1,geometries.findIntsersections(ray).size(),"Wrong calculate of intersection");
         //TC14: All the shapes is got intersection
-        assertEquals(3,geometries.findGeoIntsersections(new Ray(new Point(0.5,0.5,-1),new Vector(-0.5,-0.5,1))).size()
+        assertEquals(3,geometries.findIntsersections(new Ray(new Point(0.5,0.5,-1),new Vector(-0.5,-0.5,1))).size()
                 ,"Wrong calculate of intersection");
 
     }

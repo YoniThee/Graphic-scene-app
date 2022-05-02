@@ -25,7 +25,7 @@ public class Material {
         return this;
     }
 
-    public Material setnShininess(int nShininess) {
+    public Material setShininess(int nShininess) {
         this.nShininess = nShininess;
         return this;
     }

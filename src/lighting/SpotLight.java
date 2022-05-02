@@ -19,4 +19,8 @@ public class SpotLight extends PointLight{
         super(spCL,spPL);
         this.direction = vector;
     }
+
+    public SpotLight setNarrowBeam(int i) {
+        return this;
+    }
 }
