@@ -32,13 +32,13 @@ public class Camera {
         this.p0 = p0;
         this.vUp = vUp.normalize();
         this.vTo = vTo.normalize();
-        double ans = vUp.dotProduct(vTo);
+        double ans = vTo.dotProduct(vUp);
         try {
             if (ans == 0) {
-                vRight = this.vTo.crossProduct(this.vUp);
+                this.vRight = this.vTo.crossProduct(this.vUp).normalize();
             }
             //if the tow vectors is not vertical, throw exception.
-            else vRight = new Vector(0, 0, 0);
+            else vRight = new Vector(0, 0, 0).normalize();
         } catch (IllegalArgumentException NotVertical) {
         }
 
@@ -85,7 +85,7 @@ public class Camera {
         for (int i = 0; i < imageWriter.getNx(); i++) {
             for (int j = 0; j < imageWriter.getNy(); j++) {
 
-                Ray ray = constructRay(imageWriter.getNx(),imageWriter.getNy(),j,i);
+                Ray ray = constructRay(imageWriter.getNx(),imageWriter.getNy(),i,j);
                 Color color = castRay(ray);
                 imageWriter.writePixel(i,j,color);
             }
@@ -111,7 +111,6 @@ public class Camera {
                 imageWriter.writePixel(i, j, color);
             }
         }
-
     }
 
     public void writeToImage(){
@@ -144,11 +143,5 @@ public class Camera {
         else{
             throw new IllegalArgumentException();
         }
-
-
     }
-
-
-
-
 }
