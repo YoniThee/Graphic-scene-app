@@ -6,9 +6,12 @@ import lighting.LightSource;
 import primitives.*;
 import scene.Scene;
 
+import java.util.List;
+
 import static primitives.Util.alignZero;
 
 public class RayTracerBasic extends RayTracerBase {
+    private static final double DELTA = 0.1;
     @Override
     public Color traceRay(Ray ray) {
         var intersections = scene.geometries.findGeoIntersections(ray);
@@ -62,5 +65,12 @@ public class RayTracerBasic extends RayTracerBase {
 
     public RayTracerBasic(Scene scene) {
         super(scene);
+    }
+
+    private boolean unshaded(GeoPoint gp, Vector l, Vector n){
+        Vector lightDirection = l.scale(-1); // from point to light source
+        Ray lightRay = new Ray(gp.point, lightDirection);
+        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
+        return intersections.isEmpty();
     }
 }
