@@ -28,6 +28,7 @@ public class LightsTests {
 			.setVPSize(200, 200) //
 			.setVPDistance(1000);
 
+
 	private Point[] p = { // The Triangles' vertices:
 			new Point(-110, -110, -150), // the shared left-bottom
 			new Point(95, 100, -150), // the shared right-top

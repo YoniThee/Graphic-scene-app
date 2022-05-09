@@ -55,5 +55,4 @@ public class Plane extends Geometry {
         else return null;
     }
 
-
 }

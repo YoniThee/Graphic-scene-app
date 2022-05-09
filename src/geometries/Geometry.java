@@ -9,7 +9,7 @@ public abstract class Geometry extends Intersectable{
 
 
     public Material getMaterial() {
-        return material;
+        return this.material;
     }
 
     public Color getEmission() {
