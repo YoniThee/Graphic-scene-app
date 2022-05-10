@@ -43,12 +43,12 @@ public class PointLight extends Light implements LightSource{
         Color I0 = getIntensity();
         Double3 d = new Double3(p.distance(p,position));
         Double3 d2 = new Double3(p.distanceSquared(position));
-        Double3 ans = new Double3((kC.add( kL.product(d)) + kQ.product(d2)));
-        if(ans <1)
+        Double3 ans = kC.add( kL.product(d)).add( kQ.product(d2));
+        if(ans.lowerThan(1.0))
         {
             return this.getIntensity();
         }
-        return (I0.scale(1/(kC + kL *d + kQ*d2)));
+        return (I0.scale(1/new Vector(kC.add(kL.product(d)).add(kQ.product(d2))).length()));
 
     }
 
