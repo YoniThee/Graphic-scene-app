@@ -10,17 +10,23 @@ public class SpotLight extends PointLight{
         super(color);
     }
 
-    public SpotLight(Color color,  Vector direction) {
+    public SpotLight(Color color,Vector direction) {
         super(color);
-        this.direction = direction;
+        this.direction = direction.normalize();
     }
 
     public SpotLight(Color spCL, Point spPL, Vector vector) {
         super(spCL,spPL);
-        this.direction = vector;
+        this.direction = vector.normalize();
     }
 
-    public SpotLight setNarrowBeam(int i) {
+    @Override
+    public Color getIntensity(Point p) {
+        double max = Math.max(0, direction.dotProduct(getL(p)));
+        return super.getIntensity(p).scale(max);
+    }
+
+    public SpotLight setNarrowBeam(int narrowBeam) {
         return this;
     }
 }
