@@ -11,6 +11,7 @@ public class SpotLight extends PointLight{
     }
 
     public SpotLight(Color color,Vector direction) {
+
         super(color);
         this.direction = direction.normalize();
     }
