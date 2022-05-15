@@ -7,40 +7,46 @@ import primitives.Vector;
 
 public class PointLight extends Light implements LightSource{
     private Point position;
-    private Double3 kC, kL, kQ;
+    private double kC, kL, kQ;
     protected PointLight(Color color) {
-        super(color);
+        super(color);/*
         kC = new Double3(1.0);
         kL = new Double3(0.0);
-        kQ = new Double3(0.0);
+        kQ = new Double3(0.0);*/
+        kC = 1.0;
+        kL = 0.0;
+        kQ = 0.0;
     }
 
     public PointLight(Color color, Point position) {
         super(color);
-        kC = new Double3(1.0);
+        /*kC = new Double3(1.0);
         kL = new Double3(0.0);
-        kQ = new Double3(0.0);
+        kQ = new Double3(0.0);*/
+        kC = 1.0;
+        kL = 0.0;
+        kQ = 0.0;
         this.position = position;
     }
 
-    public PointLight setKc(Double3 kC) {
+    public PointLight setKc(double kC) {
         this.kC = kC;
         return this;
     }
 
-    public PointLight setKl(Double3 kL) {
+    public PointLight setKl(double kL) {
         this.kL = kL;
         return this;
     }
 
-    public PointLight setKq(Double3 kQ) {
+    public PointLight setKq(double kQ) {
         this.kQ = kQ;
         return this;
     }
 
     @Override
     public Color getIntensity(Point p) {
-        Color I0 = getIntensity();
+        /*Color I0 = getIntensity();
         Double3 d = new Double3(p.distance(p,position));
         Double3 d2 = new Double3(p.distanceSquared(position));
         Double3 ans = kC.add( kL.product(d)).add( kQ.product(d2));
@@ -48,7 +54,10 @@ public class PointLight extends Light implements LightSource{
         {
             return this.getIntensity();
         }
-        return (I0.scale(1/new Vector(kC.add(kL.product(d)).add(kQ.product(d2))).length()));
+        return (I0.scale(1/new Vector(ans);*/
+        double d2 = p.distanceSquared(position);
+        double factor = kC + kL * Math.sqrt(d2) + kQ * d2;
+        return getIntensity().scale(1d / factor);
 
     }
 

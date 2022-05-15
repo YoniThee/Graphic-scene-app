@@ -118,6 +118,7 @@ public class Color {
 		return new Color(rgb.scale(k));
 	}
 
+
 	/**
 	 * Scale the color by (1 / reduction factor)
 	 *
