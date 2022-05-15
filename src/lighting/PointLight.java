@@ -48,8 +48,11 @@ public class PointLight extends Light implements LightSource{
         {
             return this.getIntensity();
         }
-        return (I0.scale(1/new Vector(kC.add(kL.product(d)).add(kQ.product(d2))).length()));
+        Color iL = getIntensity().reduce(ans);
+       // return (I0.scale(1/new Vector(kC.add(kL.product(d)).add(kQ.product(d2))).length()).scale(ans));
 
+        //return (I0.scale(1/new Vector(kC.add(kL.product(d)).add(kQ.product(d2))).length()).scale(ans));
+            return iL;
     }
 
     @Override
