@@ -1,9 +1,6 @@
 package renderer;
 
-import geometries.Intersectable;
 import geometries.Intersectable.GeoPoint;
-import geometries.Plane;
-import geometries.Triangle;
 import lighting.LightSource;
 import primitives.*;
 import scene.Scene;
@@ -16,6 +13,7 @@ public class RayTracerBasic extends RayTracerBase {
     private static final double DELTA = 0.1;
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
+
 
     @Override
     public Color traceRay(Ray ray) {
@@ -37,7 +35,7 @@ public class RayTracerBasic extends RayTracerBase {
             Vector l = lightSource.getL(intersection.point);
             double nl = alignZero(n.dotProduct(l));
             if (nl * nv > 0) {// sign(nl) == sing(nv)
-                 if (unshaded(intersection,lightSource, l, n, nv)) {
+                 if (!transparency(intersection,lightSource, l, n, nv).lowerThan(MIN_CALC_COLOR_K)) {
                     Color iL = lightSource.getIntensity(intersection.point);
                     color = color.add(iL.scale(calcDiffusive(material, nl)),
                             iL.scale(calcSpecular(material, n, l, nl, v)));
@@ -78,14 +76,15 @@ public class RayTracerBasic extends RayTracerBase {
         Double3 kkr = kr.product(k);
 
 
-        if (!kkr.lowerThan( MIN_CALC_COLOR_K)) {
+        if (kkr.higherThan(MIN_CALC_COLOR_K)) {
             Ray reflectedRay = constructReflectedRay(ray, gp.geometry.getNormal(gp.point),gp.point);
             GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
-            color = color.add(calcColor(reflectedPoint, reflectedRay, level- 1, kkr).scale(kr));
+            Color c = calcColor(reflectedPoint, reflectedRay, level- 1, kkr).scale(kr);
+            color = color.add(c);
 
         }
-        Double3 kt = material.kR, kkt = kt.product(k);
-        if (!kkt.lowerThan(MIN_CALC_COLOR_K)) {
+        Double3 kt = material.kT, kkt = kt.product(k);
+        if (kkt.higherThan(MIN_CALC_COLOR_K)) {
             Ray refrectedRay = constructRefractedRay(ray,gp.geometry.getNormal(gp.point),gp.point);
             GeoPoint refractedPoint = findClosestIntersection(refrectedRay);
             color = color.add(calcColor(refractedPoint, refrectedRay, level-1, kkt).scale(kt));
@@ -94,13 +93,31 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
     private Ray constructReflectedRay(Ray ray, Vector n, Point point) {
+        //𝒓 = 𝒗 − 𝟐 ∙ (𝒗 ∙ 𝒏) ∙ n
         Vector v = ray.getDir();
         Vector r = v.subtract(n.scale(2 * v.dotProduct(n))).normalize();
-        return new Ray(point, r);
+       // return new Ray(point, r);
+
+        Vector delta = n.scale(DELTA);
+        if (n.dotProduct(r) < 0){
+            delta = delta.scale(-1);
+        }
+         Point p = point.add(delta);
+        return new Ray(p, r);
     }
 
     private Ray constructRefractedRay(Ray ray, Vector n, Point point) {
-        return new Ray(point, ray.getDir());
+      //  return new Ray(point, ray.getDir());
+
+        Vector delta = n.scale(DELTA);
+        if (n.dotProduct(ray.getDir()) < 0){
+            delta = delta.scale(-1);
+        }
+        Point p = point.add(delta);
+        Ray r = new Ray(p, ray.getDir());
+        return r;
+
+
     }
 
     private GeoPoint findClosestIntersection(Ray ray) {
@@ -116,9 +133,8 @@ public class RayTracerBasic extends RayTracerBase {
     public RayTracerBasic(Scene scene) {
         super(scene);
     }
-
-
-    private boolean unshaded(GeoPoint gp,LightSource light, Vector l, Vector n, double nv){
+    private Double3 transparency (GeoPoint gp, LightSource light, Vector l, Vector n, double nv){
+        Double3 ktr = new Double3(1.0);
         Vector lightDirection = l.scale(-1); // from point to light source
         Vector epsVector = n.scale(nv < 0 ?DELTA : -1 * DELTA);
         Point point = gp.point.add(epsVector);
@@ -126,13 +142,14 @@ public class RayTracerBasic extends RayTracerBase {
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
         if (!intersections.isEmpty()) {
          for (var nearPoint : intersections) {
-              if(light.getDistance(nearPoint.point)<lightRay.getP0().distance(nearPoint.point,lightRay.getP0())) {
-                  return false;
+              if(alignZero(gp.point.distance (gp.point,point) - light.getDistance(point)) <= 0) {
+                  ktr =  gp.geometry.getMaterial().kT.product(ktr);
+                  if (ktr.lowerThan(MIN_CALC_COLOR_K))
+                      return new Double3(0.0);
               }
          }
          //return true;
-
         }
-        return intersections.isEmpty();
+        return ktr;
     }
 }
