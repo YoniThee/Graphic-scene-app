@@ -76,12 +76,16 @@ public class Camera {
         rayTracerBase = ray;
         return this;
     }
-
+    /**
+     * This function is send ray from camera to all pixel and get the color of all the pixels at the image
+     * */
     public Camera renderImage(){
+        // validation check for safety
         if(p0 == null || vRight == null || vTo == null || vUp == null || height == 0 || width == 0
         || distance == 0 || rayTracerBase == null || imageWriter == null){
             throw new MissingResourceException("one of the properties is null/empty","Camera","");
         }
+        // calculate color of all the pixels
         for (int i = 0; i < imageWriter.getNx(); i++) {
             for (int j = 0; j < imageWriter.getNy(); j++) {
 
@@ -97,7 +101,9 @@ public class Camera {
     private Color castRay(Ray ray) {
         return rayTracerBase.traceRay(ray);
     }
-
+    /**
+     * This function is crate a grid on picture ay interval
+     * */
     public void printGrid(int interval, Color color){
         if(imageWriter == null)
             throw new MissingResourceException("this image not initialized yet","Camera","");
@@ -112,14 +118,18 @@ public class Camera {
             }
         }
     }
-
+    /**
+     * This function is crate the file of the image
+     * */
     public void writeToImage(){
         if(imageWriter == null)
             throw new MissingResourceException("This image is missing parameter","Camera","");
         else
             imageWriter.writeToImage();
     }
-
+    /**
+     * This function is crate the correct ray for all pixel, by calculate distance of view plane from camera
+     * */
     public Ray constructRay(int Nx, int Ny, int j, int i){
         Point pCenter = p0.add(vTo.scale(distance));
         double Ry = height/Ny;

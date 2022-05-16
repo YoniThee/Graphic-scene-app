@@ -10,6 +10,12 @@ import java.util.List;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
+/**
+ * Plane class represents specific two-dimensional polygon in 3D Cartesian coordinate
+ * system
+ *
+ * @author Dan
+ */
 public class Plane extends Geometry {
     private Point p0;
     private Vector normal;

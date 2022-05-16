@@ -5,7 +5,12 @@ import primitives.Ray;
 
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * Intersectale class is responsible to all intersection of all the shapes
+ * he is implemented as interface because the way to calculate intersection is difference between the shapes
+ *
+ * @author Shay Dopelt && Yehonatan Thee
+ * */
 public abstract class Intersectable{
 
     public List<Point> findIntsersections(Ray ray) {

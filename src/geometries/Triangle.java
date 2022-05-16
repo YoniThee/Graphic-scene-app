@@ -6,6 +6,11 @@ import primitives.Vector;
 
 import java.util.List;
 
+/**
+ * Triangle class is type of shape. The calculate of intersection for this shape is the same as polygon
+ *
+ * @author Shay Dopelt && Yehonatan Thee
+ */
 public class Triangle extends Polygon{
     public Triangle(Point... vertices) {
         super(vertices);

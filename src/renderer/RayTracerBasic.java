@@ -8,13 +8,21 @@ import scene.Scene;
 import java.util.List;
 
 import static primitives.Util.alignZero;
-
+/**
+ * RayTracerBasic class is responsible to calculate the color of all pixel at the image by reference to all the variable
+ * that have any effect of the color - kind and position of the light, refraction and reflection, shade, and more
+ *
+ * @author Shay Dopelt && Yehonatan Thee
+ */
 public class RayTracerBasic extends RayTracerBase {
     private static final double DELTA = 0.1;
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
 
-
+    /**
+     * This func is get ray from the image writer, find the intersection and calculate the color of
+     * all specific intersection, with reference to the light at the scene
+     * */
     @Override
     public Color traceRay(Ray ray) {
         var intersections = scene.geometries.findGeoIntersections(ray);
@@ -24,6 +32,11 @@ public class RayTracerBasic extends RayTracerBase {
 
     }
 
+    /**
+     * This function is calculate the color of GeoPoint, and reference to distance between the location of
+     * point to the light, and check if something is block the ray from light source(if there are shade)
+     * in addition, the func calculate the local and global effects on the color
+     * **/
     private Color calcLocalEffects(GeoPoint intersection, Ray ray) {
         Color color = intersection.geometry.getEmission();
         Vector v = ray.getDir ();
@@ -45,6 +58,9 @@ public class RayTracerBasic extends RayTracerBase {
         return color;
     }
 
+    /**
+     * This function is calculate the specular component of the color
+     * **/
     private Double3 calcSpecular(Material material, Vector n, Vector l, double nl, Vector v) {
         Vector r = l.subtract(n.scale(l.dotProduct(n)*2));
         double vrMinus = v.scale(-1).dotProduct(r);
@@ -52,7 +68,11 @@ public class RayTracerBasic extends RayTracerBase {
         return material.kS.scale(vrn);
     }
 
+    /**
+     * This function is calculate the diffusive component of the color
+     * **/
     private Double3 calcDiffusive(Material material, double nl) {
+
         if (nl < 0)
         {
             nl = -nl;
@@ -60,7 +80,10 @@ public class RayTracerBasic extends RayTracerBase {
         return material.kD.scale(nl);
     }
 
-
+    /**
+     * This is the most important function in this class, she called all the other function here for get the
+     * final color to return for crate the most correct image
+     * **/
     private Color calcColor(GeoPoint intersection, Ray ray, int level, Double3 k) {
         Color color =  scene.ambientLight.getIntensity()
                 .add(intersection.geometry.getEmission())
@@ -69,13 +92,17 @@ public class RayTracerBasic extends RayTracerBase {
 
     }
 
+    /**
+     * This function is reference to the reflection and refraction effect on the color by the
+     * formula that we learned at the theory course.  Using recursive calculate
+     * **/
     private Color calcGlobalEffects(GeoPoint gp, Ray ray, int level, Double3 k) {
+
         Color color = Color.BLACK;
         Material material = gp.geometry.getMaterial();
         Double3 kr = material.kR;
         Double3 kkr = kr.product(k);
-
-
+        //stop condition of the recursive calculate
         if (kkr.higherThan(MIN_CALC_COLOR_K)) {
             Ray reflectedRay = constructReflectedRay(ray, gp.geometry.getNormal(gp.point),gp.point);
             GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
@@ -84,6 +111,7 @@ public class RayTracerBasic extends RayTracerBase {
 
         }
         Double3 kt = material.kT, kkt = kt.product(k);
+        //stop condition of the recursive calculate
         if (kkt.higherThan(MIN_CALC_COLOR_K)) {
             Ray refrectedRay = constructRefractedRay(ray,gp.geometry.getNormal(gp.point),gp.point);
             GeoPoint refractedPoint = findClosestIntersection(refrectedRay);
@@ -92,8 +120,11 @@ public class RayTracerBasic extends RayTracerBase {
         return color;
     }
 
+    /**
+     * This function is responsible to calculate of the reflection on the color by the next formula
+     * 𝒓 = 𝒗 − 𝟐 ∙ (𝒗 ∙ 𝒏) ∙ n
+     * */
     private Ray constructReflectedRay(Ray ray, Vector n, Point point) {
-        //𝒓 = 𝒗 − 𝟐 ∙ (𝒗 ∙ 𝒏) ∙ n
         Vector v = ray.getDir();
         Vector r = v.subtract(n.scale(2 * v.dotProduct(n))).normalize();
        // return new Ray(point, r);
@@ -106,7 +137,11 @@ public class RayTracerBasic extends RayTracerBase {
         return new Ray(p, r);
     }
 
+    /**
+     * This function is responsible to calculate the refraction effect on the color
+     * */
     private Ray constructRefractedRay(Ray ray, Vector n, Point point) {
+
       //  return new Ray(point, ray.getDir());
 
         Vector delta = n.scale(DELTA);
@@ -120,7 +155,11 @@ public class RayTracerBasic extends RayTracerBase {
 
     }
 
+    /**
+     * Helper function to get the closest GeoPoint to the ray
+     * */
     private GeoPoint findClosestIntersection(Ray ray) {
+
         List<GeoPoint> geoPoints = scene.geometries.findGeoIntersections(ray);
         if (geoPoints.isEmpty()) {
             return null;
@@ -133,7 +172,12 @@ public class RayTracerBasic extends RayTracerBase {
     public RayTracerBasic(Scene scene) {
         super(scene);
     }
+
+    /**
+     * This function is responsible to calculate the shade effect on color
+     * */
     private Double3 transparency (GeoPoint gp, LightSource light, Vector l, Vector n, double nv){
+
         Double3 ktr = new Double3(1.0);
         Vector lightDirection = l.scale(-1); // from point to light source
         Vector epsVector = n.scale(nv < 0 ?DELTA : -1 * DELTA);

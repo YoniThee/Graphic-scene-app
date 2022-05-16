@@ -8,6 +8,13 @@ import java.util.List;
 
 import static primitives.Util.alignZero;
 
+
+/**
+ * Sphere class is type of shape.
+ * The calculate of intersection for this shape is 3D in this class
+ *
+ * @author Shay Dopelt && Yehonatan Thee
+ */
 public class Sphere extends Geometry {
     Point center;
     double radius;

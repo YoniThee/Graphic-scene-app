@@ -6,6 +6,11 @@ import primitives.Vector;
 
 import java.util.List;
 
+/**
+ * Cylinder class is type of Tube that have two bases
+ *
+ * @author Shay Dopelt && Yehonatan Thee
+ */
 public class Cylinder extends Tube{
     private double height;
 

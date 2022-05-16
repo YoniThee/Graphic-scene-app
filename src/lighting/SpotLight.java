@@ -4,6 +4,11 @@ import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
 
+/**
+ * SpotLight class is one type of light source that crate light one direction
+ *
+ * @author Shay Dopelt && Yehonatan Thee
+ */
 public class SpotLight extends PointLight{
     private Vector direction;
     protected SpotLight(Color color) {
@@ -21,6 +26,9 @@ public class SpotLight extends PointLight{
         this.direction = vector.normalize();
     }
 
+    /**
+     * This function is calculate the intensity color by the formula we learned at the course
+     * */
     @Override
     public Color getIntensity(Point p) {
         double max = Math.max(0, direction.dotProduct(getL(p)));

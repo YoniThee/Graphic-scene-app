@@ -5,6 +5,12 @@ import primitives.Double3;
 import primitives.Point;
 import primitives.Vector;
 
+
+/**
+ * PointLight class is one type of light source that crate light to all the directions at the same
+ *
+ * @author Shay Dopelt && Yehonatan Thee
+ */
 public class PointLight extends Light implements LightSource{
     private Point position;
     private double kC, kL, kQ;
@@ -44,6 +50,9 @@ public class PointLight extends Light implements LightSource{
         return this;
     }
 
+    /**
+     * This function is calculate the intensity color by the formula we learned at the course
+     * */
     @Override
     public Color getIntensity(Point p) {
         /*Color I0 = getIntensity();

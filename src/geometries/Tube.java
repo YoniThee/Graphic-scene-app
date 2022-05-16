@@ -8,6 +8,11 @@ import java.util.List;
 
 import static primitives.Util.alignZero;
 
+/**
+ * Tube class is type of shape, in this class there are calculating of intersection for this shape
+ *
+ * @author Shay Dopelt && Yehonatan Thee
+ */
 public class Tube extends Geometry {
 
     protected  double radius;
