@@ -49,6 +49,8 @@ public class Geometries extends Intersectable {
                 ans.add(temp.get(1));
             }
         }
+        if(ans.isEmpty())
+            return null;
         return ans ;
     }
 

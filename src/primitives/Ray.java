@@ -12,12 +12,22 @@ import static geometries.Intersectable.*;
 * This class will serve some shapes
 * */
 public class Ray {
+    private static final double DELTA = 0.001;
     final Point p0;
     final Vector dir;
 
     public Ray(Point p0, Vector dir) {
         this.p0 = p0;
         this.dir = dir.normalize();
+    }
+
+    public Ray(Point point, Vector r, Vector n) {
+        Vector delta = n.scale(DELTA);
+        if (n.dotProduct(r) < 0){
+            delta = delta.scale(-1);
+        }
+        this.dir = r.normalize();
+        this.p0 = point.add(delta);
     }
 
     public Point getP0() {
@@ -55,7 +65,7 @@ public class Ray {
     }
 
     public GeoPoint findClosestGeoPoint(List<GeoPoint> intersections) {
-        if(intersections.isEmpty())
+        if(intersections == null)
             return null;
         GeoPoint closest = intersections.get(0);
         double tempDistance = closest.point.distanceSquared(p0);

@@ -26,11 +26,11 @@ public class RayTracerBasic extends RayTracerBase {
     @Override
     public Color traceRay(Ray ray) {
         var intersections = scene.geometries.findGeoIntersections(ray);
-        if (intersections.isEmpty()) return scene.background;
+        if (intersections == null) return scene.background;
         GeoPoint closestPoint = ray.findClosestGeoPoint(intersections);
-        return calcColor(closestPoint,ray,MAX_CALC_COLOR_LEVEL,new Double3(MIN_CALC_COLOR_K));
-
+        return calcColor(closestPoint,ray,MAX_CALC_COLOR_LEVEL,new Double3(1.0));
     }
+
 
     /**
      * This function is calculate the color of GeoPoint, and reference to distance between the location of
@@ -102,7 +102,7 @@ public class RayTracerBasic extends RayTracerBase {
         Material material = gp.geometry.getMaterial();
         Double3 kr = material.kR;
         Double3 kkr = kr.product(k);
-        //stop condition of the recursive calculate
+        // stop condition of the recursive calculate
         if (kkr.higherThan(MIN_CALC_COLOR_K)) {
             Ray reflectedRay = constructReflectedRay(ray, gp.geometry.getNormal(gp.point),gp.point);
             GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
@@ -110,10 +110,11 @@ public class RayTracerBasic extends RayTracerBase {
             color = color.add(c);
 
         }
-        Double3 kt = material.kT, kkt = kt.product(k);
-        //stop condition of the recursive calculate
+        Double3 kt = material.kT;
+        Double3 kkt = kt.product(k);
+        // stop condition of the recursive calculate
         if (kkt.higherThan(MIN_CALC_COLOR_K)) {
-            Ray refrectedRay = constructRefractedRay(ray,gp.geometry.getNormal(gp.point),gp.point);
+            Ray refrectedRay = constructRefractedRay(ray, gp.geometry.getNormal(gp.point), gp.point);
             GeoPoint refractedPoint = findClosestIntersection(refrectedRay);
             color = color.add(calcColor(refractedPoint, refrectedRay, level-1, kkt).scale(kt));
         }
@@ -129,30 +130,14 @@ public class RayTracerBasic extends RayTracerBase {
         Vector r = v.subtract(n.scale(2 * v.dotProduct(n))).normalize();
        // return new Ray(point, r);
 
-        Vector delta = n.scale(DELTA);
-        if (n.dotProduct(r) < 0){
-            delta = delta.scale(-1);
-        }
-         Point p = point.add(delta);
-        return new Ray(p, r);
+        return new Ray(point, r, n);
     }
 
     /**
      * This function is responsible to calculate the refraction effect on the color
      * */
     private Ray constructRefractedRay(Ray ray, Vector n, Point point) {
-
-      //  return new Ray(point, ray.getDir());
-
-        Vector delta = n.scale(DELTA);
-        if (n.dotProduct(ray.getDir()) < 0){
-            delta = delta.scale(-1);
-        }
-        Point p = point.add(delta);
-        Ray r = new Ray(p, ray.getDir());
-        return r;
-
-
+        return new Ray(point, ray.getDir(),n);
     }
 
     /**
@@ -161,10 +146,6 @@ public class RayTracerBasic extends RayTracerBase {
     private GeoPoint findClosestIntersection(Ray ray) {
 
         List<GeoPoint> geoPoints = scene.geometries.findGeoIntersections(ray);
-        if (geoPoints.isEmpty()) {
-            return null;
-        }
-        else
             return ray.findClosestGeoPoint(geoPoints);
     }
 
