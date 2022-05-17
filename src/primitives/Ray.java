@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static geometries.Intersectable.*;
+import static primitives.Util.alignZero;
 
 /*
 * This class will serve some shapes
@@ -24,11 +25,13 @@ public class Ray {
 
     public Ray(Point point, Vector r, Vector n) {
         Vector delta = n.scale(DELTA);
+        this.dir = r.normalize();
         if (n.dotProduct(r) < 0){
             delta = delta.scale(-1);
+            this.p0 = point.add(delta);
         }
-        this.dir = r.normalize();
-        this.p0 = point.add(delta);
+        else
+           this.p0 = point;
     }
 
     public Point getP0() {

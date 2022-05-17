@@ -117,7 +117,7 @@ public class RayTracerBasic extends RayTracerBase {
         if (kkt.higherThan(MIN_CALC_COLOR_K)) {
             Ray refrectedRay = constructRefractedRay(ray, gp.geometry.getNormal(gp.point), gp.point);
             GeoPoint refractedPoint = findClosestIntersection(refrectedRay);
-            if(refractedPoint != null) //valid condition
+           if(refractedPoint != null) //valid condition
              color = color.add(calcColor(refractedPoint, refrectedRay, level-1, kkt).scale(kt));
         }
         return color;
@@ -170,15 +170,16 @@ public class RayTracerBasic extends RayTracerBase {
     /**
      * This function is responsible to calculate the shade effect on color
      * */
-    private Double3 transparency (GeoPoint gp, LightSource light, Vector l, Vector n, double nv){
+    private Double3 transparency (GeoPoint gp, LightSource light, Vector l, Vector n, double nv) {
 
         Double3 ktr = new Double3(1.0);
         Vector lightDirection = l.scale(-1); // from point to light source
-        Vector epsVector = n.scale(nv < 0 ?DELTA : -1 * DELTA);
+        Vector epsVector = n.scale(nv < 0 ? DELTA : -1 * DELTA);
         Point point = gp.point.add(epsVector);
         Ray lightRay = new Ray(point, lightDirection);
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
         if (intersections != null) {
+            /*
          for (var nearPoint : intersections) {
              if(alignZero(gp.point.distance (nearPoint.point,gp.point) - light.getDistance(gp.point)) <= 0) {
                   ktr =  gp.geometry.getMaterial().kT.product(ktr);
@@ -186,6 +187,21 @@ public class RayTracerBasic extends RayTracerBase {
                       return new Double3(0.0);
               }
          }
+        }
+
+             */
+            for (GeoPoint geopoint : intersections) {
+                if (alignZero(geopoint.point.distance(gp.point, geopoint.point) - light.getDistance(gp.point)) <= 0) {
+                    // if (geopoint.point.distance(gp.point) <= lightDistance &&  geopoint.geometry.getMaterial().kT.equals(new Double3(0.0))){
+                    // var  kt = ktr.product(geopoint.geometry.getMaterial().kT);
+                    var kt = geopoint.geometry.getMaterial().kT;
+                    ktr = kt.product(ktr);
+                    if (ktr.lowerThan(MIN_CALC_COLOR_K))
+                        return new Double3(0.0);
+                }
+
+
+            }
         }
         return ktr;
     }
