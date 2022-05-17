@@ -1,5 +1,6 @@
 package primitives;
 
+import geometries.Geometries;
 import geometries.Intersectable;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class Ray {
     }
 
     public GeoPoint findClosestGeoPoint(List<GeoPoint> intersections) {
-        if(intersections == null)
+        if(intersections.isEmpty())
             return null;
         GeoPoint closest = intersections.get(0);
         double tempDistance = closest.point.distanceSquared(p0);

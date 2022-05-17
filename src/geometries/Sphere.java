@@ -46,7 +46,7 @@ public class Sphere extends Geometry {
         // d = |U|^2-Tm^2
         double d = Math.sqrt(u.lengthSquared() - (Tm*Tm));
         if(d >= this.radius)
-            return null;
+            return List.of();
         else {
             // Th = sqrt(r^2-d^2)
             double Th = Math.sqrt((this.radius * this.radius) - (d * d));
@@ -65,7 +65,7 @@ public class Sphere extends Geometry {
                 }
             }
             else
-                return null;
+                return List.of();
         }
     }
 

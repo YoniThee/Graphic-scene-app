@@ -50,7 +50,7 @@ public class Plane extends Geometry {
         double nv = rayDir.dotProduct(normal);
         if(isZero(nv))
         {
-            return null;
+            return List.of();
         }
 
         double t = alignZero((p0.subtract(ray.getP0())).dotProduct(normal)/nv);
@@ -58,7 +58,7 @@ public class Plane extends Geometry {
         {
             return List.of(new GeoPoint(this,ray.getPoint(t)));
         }
-        else return null;
+        else return  List.of();
     }
 
 }

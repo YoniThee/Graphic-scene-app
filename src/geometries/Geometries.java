@@ -40,7 +40,7 @@ public class Geometries extends Intersectable {
         List<GeoPoint> ans  = new LinkedList<>();
         for (Intersectable shape:lst) {
             temp = shape.findGeoIntsersectionsHelper(ray);
-            if (temp == null)
+            if (temp.isEmpty()  )
                 continue;
             else if (temp.size() == 1)
                 ans.add(temp.get(0));
@@ -50,7 +50,7 @@ public class Geometries extends Intersectable {
             }
         }
         if(ans.isEmpty())
-            return null;
+            return  List.of();
         return ans ;
     }
 

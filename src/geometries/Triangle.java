@@ -37,7 +37,7 @@ public class Triangle extends Polygon{
                 ||(v.dotProduct(n1)<0 && v.dotProduct(n2)<0 && v.dotProduct(n3)<0))
             return  planeContainingTriangle.findGeoIntsersectionsHelper(ray);
 
-        return null;
+        return List.of();
     }
 
 

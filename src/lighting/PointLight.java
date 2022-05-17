@@ -65,8 +65,11 @@ public class PointLight extends Light implements LightSource{
         }
         return (I0.scale(1/new Vector(ans);*/
         double d2 = p.distanceSquared(position);
-        double factor = kC + kL * Math.sqrt(d2) + kQ * d2;
+       double factor = kC + kL * Math.sqrt(d2) + kQ * d2;
         return getIntensity().scale(1d / factor);
+
+    
+
 
     }
 
