@@ -1,5 +1,6 @@
 package geometries;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import primitives.*;
@@ -91,8 +92,68 @@ public class Polygon extends Geometry {
 
 	@Override
 	protected List<GeoPoint> findGeoIntsersectionsHelper(Ray ray) {
-		return null;
-	}
-
-
+			// First of all we check that there is a point of intersection
+			// with the plane where the polygon is
+			Plane plane = new Plane(vertices.get(0), vertices.get(1), vertices.get(2));
+			// The procedure is as follows:
+			// We find all the vectors that are between the head of the Ray
+			// and the vertices of the polygon.
+			// Then we find, with the help of Cartesian multiplications,
+			// all the normals that come out of the sides between every 2 adjacent vectors,
+			// and if our Ray is cut with all the above normals at a sharp angle,
+			// or with all of them at an obtuse angle
+			// (depending on the normal direction, out of the body or towards the polygon)
+			// then the Ray intersects the polygon.
+			// We will check the angles using a scalar product between the Ray and the normal
+			if (plane.findGeoIntersections(ray) != null) {
+				// Ray's head
+				Point P0 = ray.getP0();
+				// Vector from the beginning of the Ray to the point of intersection with the plane
+				Vector v = plane.findGeoIntersections(ray).get(0).point.subtract(P0);
+				GeoPoint geoPoint = new GeoPoint(this, plane.findGeoIntersections(ray).get(0).point);
+				// all the vectors that are between the head of the Ray and the vertices of the polygon.
+				List<Vector> vectorList = new LinkedList<>();
+				for (Point point3D : vertices) {
+					vectorList.add(point3D.subtract(P0));
+				}
+				// all the normals that come out of the sides between every 2 adjacent vectors
+				LinkedList<Vector> normalList = new LinkedList<>();
+				for (int i = 0; i < vectorList.size() - 1; i++) {
+					normalList.add(vectorList.get(i).crossProduct(vectorList.get(i + 1)));
+				}
+				// The last normal is calculated as a cross product
+				// between the last vector in the list and the first in the list
+				normalList.add(vectorList.get(vectorList.size() - 1).crossProduct(vectorList.get(0)));
+				// Check if everyone has the same type of angle between normal and Ray
+				// (sharp in case of negative result and blunt in case of positive result).
+				//
+				// If the result of the product is equal to zero
+				// it means that the Ray intersects the polygon exactly on the polygon itself
+				// in the side or vertex
+				boolean flag = true;
+				for (Vector normal : normalList) {
+					if (v.dotProduct(normal) <= 0) {
+						flag = false;
+						break;
+					}
+				}
+				if (flag) {
+					return List.of(geoPoint);
+				}
+				flag = true;
+				for (Vector normal : normalList) {
+					if (v.dotProduct(normal) >= 0) {
+						flag = false;
+						break;
+					}
+				}
+				if (flag) {
+					return List.of(geoPoint);
+				}
+			}
+			return List.of();
+		}
 }
+
+
+

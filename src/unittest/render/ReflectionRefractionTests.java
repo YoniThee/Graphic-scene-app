@@ -91,10 +91,10 @@ public class ReflectionRefractionTests {
 		scene.setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.15)));
 
 		scene.geometries.add( //
-			//	new Triangle(new Point(-150, -150, -115), new Point(150, -150, -135), new Point(75, 75, -150)) //
-			//			.setMaterial(new Material().setKd(new Double3(0.5)).setKs(new Double3(0.5)).setShininess(60)), //
-			//	new Triangle(new Point(-150, -150, -115), new Point(-70, 70, -140), new Point(75, 75, -150)) //
-			//			.setMaterial(new Material().setKd(new Double3(0.5)).setKs(new Double3(0.5)).setShininess(60)), //
+				new Triangle(new Point(-150, -150, -115), new Point(150, -150, -135), new Point(75, 75, -150)) //
+						.setMaterial(new Material().setKd(new Double3(0.5)).setKs(new Double3(0.5)).setShininess(60)), //
+				new Triangle(new Point(-150, -150, -115), new Point(-70, 70, -140), new Point(75, 75, -150)) //
+			 			.setMaterial(new Material().setKd(new Double3(0.5)).setKs(new Double3(0.5)).setShininess(60)), //
 				new Sphere(new Point(60, 50, -50), 30d).setEmission(new Color(BLUE)) //
 						.setMaterial(new Material().setKd(new Double3(0.2)).setKs(new Double3(0.2)).setShininess(30).setKT(new Double3(0.6))));
 
@@ -107,4 +107,5 @@ public class ReflectionRefractionTests {
 				.renderImage() //
 				.writeToImage();
 	}
+
 }

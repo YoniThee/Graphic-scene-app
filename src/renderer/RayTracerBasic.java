@@ -48,7 +48,7 @@ public class RayTracerBasic extends RayTracerBase {
             Vector l = lightSource.getL(intersection.point);
             double nl = alignZero(n.dotProduct(l));
             if (nl * nv > 0) {// sign(nl) == sing(nv)
-                 if (!transparency(intersection,lightSource, l, n, nv).lowerThan(MIN_CALC_COLOR_K)) {
+                 if (transparency(intersection,lightSource, l, n, nv).higherThan(MIN_CALC_COLOR_K)) {
                     Color iL = lightSource.getIntensity(intersection.point);
                     color = color.add(iL.scale(calcDiffusive(material, nl)),
                             iL.scale(calcSpecular(material, n, l, nl, v)));
@@ -108,7 +108,7 @@ public class RayTracerBasic extends RayTracerBase {
         if (kkr.higherThan(MIN_CALC_COLOR_K)) {
             Ray reflectedRay = constructReflectedRay(ray, gp.geometry.getNormal(gp.point),gp.point);
             GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
-            if(reflectedPoint != null)
+            if(reflectedPoint != null) //valid condition
                 color  = color.add(calcColor(reflectedPoint, reflectedRay, level- 1, kkr).scale(kr));
         }
         Double3 kt = material.kT;
@@ -117,7 +117,7 @@ public class RayTracerBasic extends RayTracerBase {
         if (kkt.higherThan(MIN_CALC_COLOR_K)) {
             Ray refrectedRay = constructRefractedRay(ray, gp.geometry.getNormal(gp.point), gp.point);
             GeoPoint refractedPoint = findClosestIntersection(refrectedRay);
-            if(refractedPoint != null)
+            if(refractedPoint != null) //valid condition
              color = color.add(calcColor(refractedPoint, refrectedRay, level-1, kkt).scale(kt));
         }
         return color;
@@ -180,13 +180,12 @@ public class RayTracerBasic extends RayTracerBase {
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
         if (intersections != null) {
          for (var nearPoint : intersections) {
-             if(alignZero(gp.point.distance (nearPoint.point,gp.point) - light.getDistance(nearPoint.point)) <= 0) {
+             if(alignZero(gp.point.distance (nearPoint.point,gp.point) - light.getDistance(gp.point)) <= 0) {
                   ktr =  gp.geometry.getMaterial().kT.product(ktr);
                   if (ktr.lowerThan(MIN_CALC_COLOR_K))
                       return new Double3(0.0);
               }
          }
-         //return true;
         }
         return ktr;
     }

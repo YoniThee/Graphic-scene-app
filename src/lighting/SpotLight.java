@@ -33,6 +33,7 @@ public class SpotLight extends PointLight{
     public Color getIntensity(Point p) {
         double max = Math.max(0, direction.dotProduct(getL(p)));
         return super.getIntensity(p).scale(max);
+
     }
 
     public SpotLight setNarrowBeam(int narrowBeam) {
