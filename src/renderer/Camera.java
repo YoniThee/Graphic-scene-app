@@ -5,6 +5,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.MissingResourceException;
 
 import static java.awt.Color.RED;
@@ -88,14 +90,36 @@ public class Camera {
         // calculate color of all the pixels
         for (int i = 0; i < imageWriter.getNx(); i++) {
             for (int j = 0; j < imageWriter.getNy(); j++) {
-
-                Ray ray = constructRay(imageWriter.getNx(),imageWriter.getNy(),i,j);
-                Color color = castRay(ray);
+                 Ray ray = constructRay(imageWriter.getNx(),imageWriter.getNy(),i,j);
+                 Color color = castRay(ray);
+                //List<Color> antiAlisingList = antiAlising(imageWriter,3,3);
+                //Color color = avarageColor(antiAlisingList);
                 imageWriter.writePixel(i,j,color);
             }
         }
         return this;
         //throw new UnsupportedOperationException();
+    }
+
+    private Color avarageColor(List<Color> antiAlisingList) {
+        Color color = new Color(0.0,0.0,0.0);
+        for(int i = 0; i < antiAlisingList.size();i++){
+            color = color.add(antiAlisingList.get(i));
+            color = color.reduce(2);
+        }
+        return color;
+    }
+
+    private List<Color> antiAlising(ImageWriter imageWriter, int i, int j) {
+       List<Color>lst = new LinkedList<>();
+        for (int x = 0; x < i; x++) {
+            for (int y = 0; y < j; y++)
+            {
+                Ray ray = constructRay(imageWriter.getNx(),imageWriter.getNy(),x,y);
+                lst.add(castRay(ray));
+            }
+        }
+        return lst;
     }
 
     private Color castRay(Ray ray) {

@@ -38,9 +38,12 @@ public class Ray {
         return p0;
     }
 
-    public Point getPoint(double t)
-    {
-        return p0.add(dir.scale(t));
+    public Point getPoint(double t) {
+        try {
+            return p0.add(dir.scale(t));
+        } catch (IllegalArgumentException ignore) {
+            return p0;
+        }
     }
 
     public Vector getDir() {

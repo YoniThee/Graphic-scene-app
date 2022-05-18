@@ -48,10 +48,11 @@ public class RayTracerBasic extends RayTracerBase {
             Vector l = lightSource.getL(intersection.point);
             double nl = alignZero(n.dotProduct(l));
             if (nl * nv > 0) {// sign(nl) == sing(nv)
-                 if (transparency(intersection,lightSource, l, n, nv).higherThan(MIN_CALC_COLOR_K)) {
-                    Color iL = lightSource.getIntensity(intersection.point);
-                    color = color.add(iL.scale(calcDiffusive(material, nl)),
-                            iL.scale(calcSpecular(material, n, l, nl, v)));
+                Double3 ktr = transparency(intersection,lightSource, l, n, nv);
+                 if (ktr.higherThan(MIN_CALC_COLOR_K)) {
+                     Color iL = lightSource.getIntensity(intersection.point).scale(ktr);
+                     color = color.add(iL.scale(calcDiffusive(material, nl)),
+                             iL.scale(calcSpecular(material,n, l, nl, v)));
                }
             }
         }
