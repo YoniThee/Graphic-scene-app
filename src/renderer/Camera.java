@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.MissingResourceException;
 
 import static java.awt.Color.RED;
-import static primitives.Util.alignZero;
-import static primitives.Util.isZero;
+import static primitives.Util.*;
+
 /**
  * Camera class is create the view plane and all the rays from camera to the objects at the destination.
  * the class also can crate pictures by using imageWriter class
@@ -90,15 +90,95 @@ public class Camera {
         // calculate color of all the pixels
         for (int i = 0; i < imageWriter.getNx(); i++) {
             for (int j = 0; j < imageWriter.getNy(); j++) {
-                 Ray ray = constructRay(imageWriter.getNx(),imageWriter.getNy(),i,j);
-                 Color color = castRay(ray);
+                 //Ray ray = constructRay(imageWriter.getNx(),imageWriter.getNy(),i,j);
+                 //Color color = castRay(ray);
                 //List<Color> antiAlisingList = antiAlising(imageWriter,3,3);
                 //Color color = avarageColor(antiAlisingList);
-                imageWriter.writePixel(i,j,color);
+                double rColor = 0.0, gColor = 0.0,bColor =0.0;
+                double divide = 8;
+                LinkedList<Ray> beam = constructBeam(imageWriter.getNx(), imageWriter.getNy(), j, i, divide);
+                for (Ray ray : beam) {
+                    rColor += rayTracerBase.traceRay(ray).getColor().getRed();
+                    gColor += rayTracerBase.traceRay(ray).getColor().getGreen();
+                    bColor += rayTracerBase.traceRay(ray).getColor().getBlue();
+                }
+                imageWriter.writePixel(
+                        j, i, new Color(
+                                rColor / (divide * divide + 1),
+                                gColor / (divide * divide + 1),
+                                bColor / (divide * divide + 1)));
+               // imageWriter.writePixel(i,j,color);
             }
         }
         return this;
         //throw new UnsupportedOperationException();
+    }
+    public LinkedList<Ray> constructBeam(int nX,  int nY, int j , int i, double divide) {
+
+        /**
+         * the image's center
+         */
+        Point Pc = p0.add(vTo.scale(distance));
+
+        /**
+         * height of single pixel
+         */
+        double Ry = alignZero(height/nY);
+
+        /**
+         * width of single pixel
+         */
+        double Rx = alignZero(width/nX);
+
+        /**
+         * amount of pixels to move in y axis from pc to i
+         */
+        double Yi = alignZero(-(i - ((nY - 1) / 2d)) * Ry);
+
+        /**
+         * amount of pixels  to move in x axis from pc to j
+         */
+        double Xj = alignZero((j - ((nX - 1) / 2d)) * Rx);
+
+        Point Pij = Pc;
+
+        if(!isZero(Xj)) {
+            //only move on X axis
+            Pij = Pij.add(vRight.scale(Xj));
+        }
+
+
+        if(!isZero(Yi)) {
+            //only move on Y axis
+            Pij = Pij.add(vUp.scale(Yi));
+        }
+
+        var rayList = new LinkedList<Ray>();
+        rayList.add(constructRay(nX, nY, j, i));
+        /**
+         * up left corner of pixel
+         */
+        Point pixStart = Pij.add(vRight.scale(-Rx / 2)).add(vUp.scale(Ry / 2));
+        // The formation of the rays within the division of the pixel,
+        // in each square a point of intersection is selected at random
+        for (double row = 0; row < divide; row++) {
+            for (double col = 0; col < divide; col++) {
+                rayList.add(randomPointRay(pixStart, col/divide, -row/divide));
+            }
+        }
+        return rayList;
+    }
+    private Ray randomPointRay(Point pixStart, double col, double row) {
+        Point point = pixStart;
+        if(!isZero(col)) {
+            //only move on X axis
+            point = point.add(vRight.scale(random(0, col)));
+        }
+        if(!isZero(row)) {
+            //only move on Y axis
+            point = point.add(vUp.scale(random(row, 0)));
+        }
+        return new Ray(p0, point.subtract(p0));
     }
 
     private Color avarageColor(List<Color> antiAlisingList) {
