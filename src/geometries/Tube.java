@@ -103,7 +103,7 @@ public class Tube extends Geometry {
         double delta = b * b - 4 * a * c;
         // no intersections
         if (delta <= 0) {
-            return null;
+            return List.of();
         } else {
             //calculate points taking only those with t > 0
             double t1 = alignZero((-b - Math.sqrt(delta)) / (2 * a));

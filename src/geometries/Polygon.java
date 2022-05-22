@@ -105,7 +105,7 @@ public class Polygon extends Geometry {
 			// (depending on the normal direction, out of the body or towards the polygon)
 			// then the Ray intersects the polygon.
 			// We will check the angles using a scalar product between the Ray and the normal
-			if (plane.findGeoIntersections(ray) != null) {
+			if (!plane.findGeoIntersections(ray).isEmpty()) {
 				// Ray's head
 				Point P0 = ray.getP0();
 				// Vector from the beginning of the Ray to the point of intersection with the plane
