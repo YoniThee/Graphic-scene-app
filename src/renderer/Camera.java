@@ -88,12 +88,14 @@ public class Camera {
             throw new MissingResourceException("one of the properties is null/empty","Camera","");
         }
         // calculate color of all the pixels
-        for (int i = 0; i < imageWriter.getNx(); i++) {
-            for (int j = 0; j < imageWriter.getNy(); j++) {
-                 Ray ray = constructRay(imageWriter.getNx(),imageWriter.getNy(),i,j);
-                 Color color = castRay(ray);
+        int ny = imageWriter.getNy();
+        int nx = imageWriter.getNx();
+        for (int i = 0; i < nx; i++) {
+           for (int j = 0; j < ny; j++) {
+               castRay(ny, nx, i, j);
 
-                /*double rColor = 0.0, gColor = 0.0,bColor =0.0;
+
+                double rColor = 0.0, gColor = 0.0,bColor =0.0;
                 double divide = 8;
                 LinkedList<Ray> beam = constructBeam(imageWriter.getNx(), imageWriter.getNy(), j, i, divide);
                 for (Ray ray : beam) {
@@ -105,11 +107,21 @@ public class Camera {
                         j, i, new Color(
                                 rColor / (divide * divide + 1),
                                 gColor / (divide * divide + 1),
-                                bColor / (divide * divide + 1)));*/
-                imageWriter.writePixel(i,j,color);
+                                bColor / (divide * divide + 1)));
+
+
+
+
             }
+
         }
         return this;
+    }
+
+    private void castRay(int ny, int nx, int i, int j) {
+        Ray ray = constructRay(nx, ny, i, j);
+        Color color = castRay(ray);
+        imageWriter.writePixel(i, j,color);
     }
 
     public LinkedList<Ray> constructBeam(int nX,  int nY, int j , int i, double divide) {

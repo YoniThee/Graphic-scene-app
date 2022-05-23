@@ -54,8 +54,12 @@ public class Plane extends Geometry {
         }
 
         double t = alignZero((p0.subtract(ray.getP0())).dotProduct(normal)/nv);
+
         if(t>0)
         {
+            if(ray.getPoint(t).subtract(p0).normalize().equals(rayDir))
+                return null;
+
             return List.of(new GeoPoint(this,ray.getPoint(t)));
         }
         else return  List.of();
