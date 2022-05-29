@@ -131,12 +131,8 @@ class PianoTest {
 		scene.lights.add(
 				new SpotLight(new Color(400, 240, 0), new Point(100.9,350.5,140),new Vector(1,0,0))
 						.setKl(1E-5).setKq(1.5E-7));
-	/*	scene.lights.add( //
-						new PointLight(new Color(400, 240, 0), new Point(-8,-5,13)) //
-						.setKl(1E-5).setKq(1.5E-7));*/
-		//scene.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), new Double3(0.15)));
 
-		camera.setImageWriter(new ImageWriter("Pianozz", 400, 400)) //
+		camera.setImageWriter(new ImageWriter("PianoThread99", 400, 400)) //
 				.renderImage() //
 				.writeToImage();
 	}
