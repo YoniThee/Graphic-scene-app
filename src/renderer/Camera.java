@@ -79,9 +79,7 @@ public class Camera {
         return this;
     }
     /**
-     * This function is send ray from camera to all pixel and get the color of all the pixels at the image.
-     * The func can crate high quality image by using @castBeam method or less quality image by using @castRay method
-     * and both of them is using threads for faster result.
+     * This function is send ray from camera to all pixel and get the color of all the pixels at the image
      * */
     public Camera renderImage(){
         // validation check for safety
@@ -89,65 +87,87 @@ public class Camera {
         || distance == 0 || rayTracerBase == null || imageWriter == null){
             throw new MissingResourceException("one of the properties is null/empty","Camera","");
         }
-        int nY = imageWriter.getNy();
-        int nX = imageWriter.getNx();
-        int divide = 9;
-        int threadsCount = 3;
-        Pixel.initialize(nY, nX, 1);
-        while (threadsCount-- > 0) {
-            new Thread(() -> {
-                for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())
-            //        castRay(nY, nX, pixel.col, pixel.row);
-                          castBeam(constructBeam(nX,nY,pixel.col, pixel.row,divide),divide,pixel);
-            }).start();
+        // calculate color of all the pixels
+        int ny = imageWriter.getNy();
+        int nx = imageWriter.getNx();
+        for (int i = 0; i < nx; i++) {
+           for (int j = 0; j < ny; j++) {
+               castRay(ny, nx, i, j);
+
+                double rColor = 0.0, gColor = 0.0,bColor =0.0;
+                double divide = 8;
+                LinkedList<Ray> beam = constructBeam(imageWriter.getNx(), imageWriter.getNy(), j, i, divide);
+                for (Ray ray : beam) {
+                    rColor += rayTracerBase.traceRay(ray).getColor().getRed();
+                    gColor += rayTracerBase.traceRay(ray).getColor().getGreen();
+                    bColor += rayTracerBase.traceRay(ray).getColor().getBlue();
+                }
+                imageWriter.writePixel(
+                        j, i, new Color(
+                                rColor / (divide * divide + 1),
+                                gColor / (divide * divide + 1),
+                                bColor / (divide * divide + 1)));
+
+
+
+
+            }
+
         }
-        Pixel.waitToFinish();
         return this;
     }
 
-    /**
-     * This function is get location of specific point at the view plane and crate ray from camera
-     * to the location and calculate his color, and after that write the color to the image
-     * */
-    private void castRay(int nY, int nX, int i, int j) {
-        Ray ray = constructRay(nX, nY, i, j);
+    private void castRay(int ny, int nx, int i, int j) {
+        Ray ray = constructRay(nx, ny, i, j);
         Color color = castRay(ray);
         imageWriter.writePixel(i, j,color);
     }
 
-    /**
-     * This function is get location of specific point at the view plane and crate beam(list) of rays  from camera
-     * to the location and calculate his color, and after that write the color to the image
-     * */
-    private void castBeam(LinkedList<Ray> beam,int divide,Pixel pixel){
-        double rColor = 0.0, gColor = 0.0,bColor =0.0;
-        for (Ray ray : beam) {
-            rColor += rayTracerBase.traceRay(ray).getColor().getRed();
-            gColor += rayTracerBase.traceRay(ray).getColor().getGreen();
-            bColor += rayTracerBase.traceRay(ray).getColor().getBlue();
-        }
-        int nX = imageWriter.getNx();
-        int nY = imageWriter.getNy();
-        imageWriter.writePixel(
-                pixel.row, pixel.col, new Color(
-                        rColor / (divide * divide + 1),
-                        gColor / (divide * divide + 1),
-                        bColor / (divide * divide + 1)));
-
-    }
-
-    /**
-     * This function is get location at the view plane and limit of row and colum, and crate list of rays for the pixel
-     * */
     public LinkedList<Ray> constructBeam(int nX,  int nY, int j , int i, double divide) {
-        Point Pij = initializePC(nY,nX,j,i);
+
+        /**
+         * the image's center
+         */
+        Point Pc = p0.add(vTo.scale(distance));
+
+        /**
+         * height of single pixel
+         */
+        double Ry = alignZero(height/nY);
+
+        /**
+         * width of single pixel
+         */
+        double Rx = alignZero(width/nX);
+
+        /**
+         * amount of pixels to move in y axis from pc to i
+         */
+        double Yi = alignZero(-(i - ((nY - 1) / 2d)) * Ry);
+
+        /**
+         * amount of pixels  to move in x axis from pc to j
+         */
+        double Xj = alignZero((j - ((nX - 1) / 2d)) * Rx);
+
+        Point Pij = Pc;
+
+        if(!isZero(Xj)) {
+            //only move on X axis
+            Pij = Pij.add(vRight.scale(Xj));
+        }
+
+
+        if(!isZero(Yi)) {
+            //only move on Y axis
+            Pij = Pij.add(vUp.scale(Yi));
+        }
+
         var rayList = new LinkedList<Ray>();
         rayList.add(constructRay(nX, nY, j, i));
         /**
          * up left corner of pixel
          */
-        double Ry = alignZero(height/nY);
-        double Rx = alignZero(width/nX);
         Point pixStart = Pij.add(vRight.scale(-Rx / 2)).add(vUp.scale(Ry / 2));
         // The formation of the rays within the division of the pixel,
         // in each square a point of intersection is selected at random
@@ -159,38 +179,6 @@ public class Camera {
         return rayList;
     }
 
-    /**
-     * Helper function for initialize the ray to the center of the pixel, this code calculate is from the lecture.
-     * the function is get location of specific pixel and calculate the point
-     */
-    private Point initializePC(int nY,int nX,int i,int j){
-        // the image's center
-        Point Pc = p0.add(vTo.scale(distance));
-        //height of single pixel
-        double Ry = alignZero(height/nY);
-        //width of single pixel
-        double Rx = alignZero(width/nX);
-        //amount of pixels to move in y axis from pc to i
-        double Yi = alignZero(-(i - ((nY - 1) / 2d)) * Ry);
-        //amount of pixels  to move in x axis from pc to j
-        double Xj = alignZero((j - ((nX - 1) / 2d)) * Rx);
-
-        Point Pij = Pc;
-        if(!isZero(Xj)) {
-            //only move on X axis
-            Pij = Pij.add(vRight.scale(Xj));
-        }
-        if(!isZero(Yi)) {
-            //only move on Y axis
-            Pij = Pij.add(vUp.scale(Yi));
-        }
-        return Pij;
-    }
-
-    /**
-     * The "AntiAlising" implement is have some ways, we choose to implement by random. This function is get Point at the
-     * pixel and return another point at the same pixel.
-     * */
     private Ray randomPointRay(Point pixStart, double col, double row) {
         Point point = pixStart;
         if(!isZero(col)) {
@@ -204,13 +192,30 @@ public class Camera {
         return new Ray(p0, point.subtract(p0));
     }
 
-    /**
-     * This function is connect the Camera to The RayTracer for get all the functionality of there
-     * */
+    private Color avarageColor(List<Color> antiAlisingList) {
+        Color color = new Color(0.0,0.0,0.0);
+        for(int i = 0; i < antiAlisingList.size();i++){
+            color = color.add(antiAlisingList.get(i));
+            color = color.reduce(2);
+        }
+        return color;
+    }
+
+    private List<Color> antiAlising(ImageWriter imageWriter, int i, int j) {
+       List<Color>lst = new LinkedList<>();
+        for (int x = 0; x < i; x++) {
+            for (int y = 0; y < j; y++)
+            {
+                Ray ray = constructRay(imageWriter.getNx(),imageWriter.getNy(),x,y);
+                lst.add(castRay(ray));
+            }
+        }
+        return lst;
+    }
+
     private Color castRay(Ray ray) {
         return rayTracerBase.traceRay(ray);
     }
-
     /**
      * This function is crate a grid on picture ay interval
      * */
@@ -228,7 +233,6 @@ public class Camera {
             }
         }
     }
-
     /**
      * This function is crate the file of the image
      * */
@@ -238,12 +242,24 @@ public class Camera {
         else
             imageWriter.writeToImage();
     }
-
     /**
      * This function is crate the correct ray for all pixel, by calculate distance of view plane from camera
      * */
     public Ray constructRay(int Nx, int Ny, int j, int i){
-        Point intersectionPoint = initializePC(Ny,Nx,i,j);
+        Point pCenter = p0.add(vTo.scale(distance));
+        double Ry = height/Ny;
+        double Rx = width/Nx;
+        double Yi = -1 * (i - alignZero((double)(Ny-1)/2))*Ry;
+        double Xj = (j - alignZero((double)(Nx-1)/2))*Rx;
+        Point intersectionPoint = pCenter;
+        if(!isZero(Xj))
+        {
+            intersectionPoint = intersectionPoint.add(vRight.scale(Xj));
+        }
+        if(!isZero(Yi))
+        {
+            intersectionPoint = intersectionPoint.add(vUp.scale(Yi));;
+        }
         Vector dir = intersectionPoint.subtract(p0);
         if(!isZero(dir.length())) {
             Ray r = new Ray(p0, dir);
