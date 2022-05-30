@@ -126,8 +126,7 @@ public class Camera {
             gColor += rayTracerBase.traceRay(ray).getColor().getGreen();
             bColor += rayTracerBase.traceRay(ray).getColor().getBlue();
         }
-        int nX = imageWriter.getNx();
-        int nY = imageWriter.getNy();
+
         imageWriter.writePixel(
                 pixel.row, pixel.col, new Color(
                         rColor / (divide * divide + 1),
