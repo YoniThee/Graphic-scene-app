@@ -119,7 +119,7 @@ public class Camera {
      * This function is get location of specific point at the view plane and crate beam(list) of rays  from camera
      * to the location and calculate his color, and after that write the color to the image
      * */
-    private void castBeam(LinkedList<Ray> beam,int divide,Pixel pixel){
+    private void castBeam(List<Ray> beam,int divide,Pixel pixel){
         double rColor = 0.0, gColor = 0.0,bColor =0.0;
         for (Ray ray : beam) {
             rColor += rayTracerBase.traceRay(ray).getColor().getRed();
@@ -132,13 +132,12 @@ public class Camera {
                         rColor / (divide * divide + 1),
                         gColor / (divide * divide + 1),
                         bColor / (divide * divide + 1)));
-
     }
 
     /**
      * This function is get location at the view plane and limit of row and colum, and crate list of rays for the pixel
      * */
-    public LinkedList<Ray> constructBeam(int nX,  int nY, int j , int i, double divide) {
+    public List<Ray> constructBeam(int nX,  int nY, int j , int i, double divide) {
         Point Pij = initializePC(nY,nX,j,i);
         var rayList = new LinkedList<Ray>();
         rayList.add(constructRay(nX, nY, j, i));
