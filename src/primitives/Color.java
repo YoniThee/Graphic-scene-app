@@ -143,4 +143,11 @@ public class Color {
 		return new Color(rgb.d1 / k.d1, rgb.d2 / k.d2, rgb.d3 / k.d3);
 	}
 
+    public boolean isChange(Color color) {
+		if((rgb.d1 - color.rgb.d1 < 5 || rgb.d1 - color.rgb.d1 > -5) || (rgb.d2 - color.rgb.d2 < 5 || rgb.d2 - color.rgb.d2 > -5)
+				|| (rgb.d3 - color.rgb.d3 < 5 || rgb.d3 - color.rgb.d3 > -5))
+			return true;
+		else
+			return false;
+    }
 }

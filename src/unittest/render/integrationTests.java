@@ -26,7 +26,7 @@ class integrationTests {
 		 {
 			 for(int j = 0; j < nY; j++)
 			 {
-				 if(shape.findIntsersections(camera.constructRay(3,3,j,i))!=null)
+				 if(shape.findIntsersections(camera.constructRay(3,3,j,i)) != null)
 					 counter += shape.findIntsersections(camera.constructRay(3,3,j,i)).size();
 			 }
 		 }

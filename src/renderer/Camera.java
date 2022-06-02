@@ -1,10 +1,13 @@
 package renderer;
 
+import geometries.Geometry;
+import geometries.Intersectable;
 import primitives.Color;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -28,6 +31,8 @@ public class Camera {
     private double distance;
     private ImageWriter imageWriter;
     private RayTracerBase rayTracerBase;
+
+    private boolean AntiAlaising = false;
 
 
     public Camera(Point p0, Vector vTo, Vector vUp) {
@@ -78,6 +83,10 @@ public class Camera {
         rayTracerBase = ray;
         return this;
     }
+    public Camera setAntiAlising(Boolean antiAlising){
+        AntiAlaising = antiAlising;
+        return this;
+    }
     /**
      * This function is send ray from camera to all pixel and get the color of all the pixels at the image.
      * The func can crate high quality image by using @castBeam method or less quality image by using @castRay method
@@ -91,17 +100,28 @@ public class Camera {
         }
         int nY = imageWriter.getNy();
         int nX = imageWriter.getNx();
-        int divide = 9;
         int threadsCount = 3;
         Pixel.initialize(nY, nX, 1);
-        while (threadsCount-- > 0) {
-            new Thread(() -> {
-                for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())
-            //        castRay(nY, nX, pixel.col, pixel.row);
-                          castBeam(constructBeam(nX,nY,pixel.col, pixel.row,divide),divide,pixel);
-            }).start();
+        if(AntiAlaising) {
+            int divide = 2;
+            while (threadsCount-- > 0) {
+                new Thread(() -> {
+                    for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())
+                        castBeam(constructBeam(nX, nY, pixel.col, pixel.row, divide), divide, pixel);
+                }).start();
+            }
+            Pixel.waitToFinish();
         }
-        Pixel.waitToFinish();
+        else{
+            while (threadsCount-- > 0) {
+                new Thread(() -> {
+                    for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())
+                        castRay(nX, nY, pixel.col, pixel.row);
+                }).start();
+            }
+            Pixel.waitToFinish();
+        }
+
         return this;
     }
 
@@ -119,28 +139,68 @@ public class Camera {
      * This function is get location of specific point at the view plane and crate beam(list) of rays  from camera
      * to the location and calculate his color, and after that write the color to the image
      * */
-    private void castBeam(List<Ray> beam,int divide,Pixel pixel){
-        double rColor = 0.0, gColor = 0.0,bColor =0.0;
-        for (Ray ray : beam) {
-            rColor += rayTracerBase.traceRay(ray).getColor().getRed();
-            gColor += rayTracerBase.traceRay(ray).getColor().getGreen();
-            bColor += rayTracerBase.traceRay(ray).getColor().getBlue();
+    private void castBeam(List<rayColor> beam,int divide,Pixel pixel) {
+        Color endColor = new Color(0,0,0);
+        for (var rayColor:beam) {
+            endColor = endColor.add(rayColor.color);
+        }
+        endColor = endColor.reduce(beam.size());
+        while (divide <= 8){//stop condition for the recursive call of this function
+            //depth of the recursive is up to 4 times - 2*2,4*4,8*8,16*16
+            if (bigChangeColor(beam,endColor)) {
+
+                //add to the beam more rays that through the pixel for better quality
+                //because we want to add more rays, but not  to lose our last calculate of random rays, we are adding
+                //more rays at the same number of our divide
+                beam.addAll(constructBeam(imageWriter.getNx(), imageWriter.getNy(), pixel.row, pixel.col, divide));
+                divide *= 2; //continue to stop condition
+                //calculate the new color, maybe now there is the average color, so we should stop the recursive.
+                for (var rayColor:beam) {
+                    endColor = endColor.add(rayColor.color);
+                }
+                endColor = endColor.reduce(beam.size());
+
+            }
+            else
+                break;
         }
 
+
+
         imageWriter.writePixel(
-                pixel.row, pixel.col, new Color(
-                        rColor / (divide * divide + 1),
-                        gColor / (divide * divide + 1),
-                        bColor / (divide * divide + 1)));
+                pixel.row, pixel.col,endColor);
+        /*int indexBeam = 0;
+        for (var rayColor:beam) {
+            //compare the color of center point at pixel to all the corners
+           if(rayColor.color.isChange(beam.get(2).color))
+           {
+               indexBeam == 1 ? constructBeam(constructFiveRays(imageWriter.getNx(),imageWriter.getNy(), pixel.col, pixel.row));
+               indexBeam == 1 ? constructBeam();
+               indexBeam == 3 ? constructBeam();
+               indexBeam == 4 ? constructBeam();
+           }
+           indexBeam++;
+        }*/
+
+
+    }
+    private boolean bigChangeColor(List<rayColor> beam,Color avaregeColor) {
+        for (rayColor rayColor:beam) {
+            if(avaregeColor.isChange(rayTracerBase.traceRay(rayColor.ray)))
+                return true;
+        }
+        return false;
     }
 
     /**
      * This function is get location at the view plane and limit of row and colum, and crate list of rays for the pixel
      * */
-    public List<Ray> constructBeam(int nX,  int nY, int j , int i, double divide) {
+    public List<rayColor> constructBeam(int nX,  int nY, int j , int i, double divide) {
         Point Pij = initializePC(nY,nX,j,i);
-        var rayList = new LinkedList<Ray>();
-        rayList.add(constructRay(nX, nY, j, i));
+        var rayList = new LinkedList<rayColor>();
+        Ray mainRay = constructRay(nX, nY, j, i);
+        rayList.add(new rayColor(mainRay,rayTracerBase.traceRay(mainRay))); // The main ray
+
         /**
          * up left corner of pixel
          */
@@ -151,7 +211,8 @@ public class Camera {
         // in each square a point of intersection is selected at random
         for (double row = 0; row < divide; row++) {
             for (double col = 0; col < divide; col++) {
-                rayList.add(randomPointRay(pixStart, col/divide, -row/divide));
+                Ray randomRay = randomPointRay(pixStart, col/divide, -row/divide);
+                rayList.add(new rayColor(randomRay,rayTracerBase.traceRay(randomRay)));
             }
         }
         return rayList;
@@ -186,7 +247,7 @@ public class Camera {
     }
 
     /**
-     * The "AntiAlising" implement is have some ways, we choose to implement by random. This function is get Point at the
+     * The "AntiAliasing" implement is have some ways, we choose to implement by random. This function is get Point at the
      * pixel and return another point at the same pixel.
      * */
     private Ray randomPointRay(Point pixStart, double col, double row) {
@@ -241,6 +302,7 @@ public class Camera {
      * This function is crate the correct ray for all pixel, by calculate distance of view plane from camera
      * */
     public Ray constructRay(int Nx, int Ny, int j, int i){
+        //we start calculate from the center of the pixel (PC = Point center)
         Point intersectionPoint = initializePC(Ny,Nx,i,j);
         Vector dir = intersectionPoint.subtract(p0);
         if(!isZero(dir.length())) {
@@ -249,6 +311,19 @@ public class Camera {
         }
         else{
             throw new IllegalArgumentException();
+        }
+    }
+    /**
+     * PDS for better use at anti aliasing
+     * */
+    public static class rayColor {
+        //this struct got 2 properties: ray and the color that we got from the intersection of the ray with shape
+        public Ray ray;
+        public Color color;
+
+        public rayColor(Ray ray, Color color) {
+            this.ray = ray;
+            this.color = color;
         }
     }
 }

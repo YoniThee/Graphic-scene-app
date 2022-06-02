@@ -66,19 +66,21 @@ class TubeTest {
         // =============== Boundary Values Tests ==================
         //**** Group: ray from inside
         //TC10: Ray from inside intersect the base(1 point)
-        assertEquals(tube.findIntsersections(new Ray(new Point(0,1,2),new Vector(0,-1,-1))),
-                List.of(new Point(0,0,1)),"wrong intersect point from inside to base");
+        assertEquals(  List.of(new Point(0.0,-2.4528470752104745,-1.4528470752104745)),
+                tube.findIntsersections(new Ray(new Point(0,1,2),new Vector(0,-1,-1))),
+              "wrong intersect point from inside to base");
 
         //TC11: Ray from inside intersect the side(1 point)
-        assertEquals(tube.findIntsersections(new Ray(new Point(0,1,2),new Vector(-2.5,0,0))),
-                List.of(new Point(-2.5,1,2)),"wrong intersect point from inside to side");
+        assertEquals( List.of(new Point(-2.479919353527449,1.0,2.0)),
+                tube.findIntsersections(new Ray(new Point(0,1,2),new Vector(-2.5,0,0))),
+               "wrong intersect point from inside to side");
 
         //**** Group: ray on tangent
         //TC12: Ray on tangent(0 point)
         assertNull(tube.findIntsersections(new Ray(new Point(2.5,1,1),new Vector(0,1,3))),
                 "wrong intersect point");
         //TC13: Ray on ths base(0 point)
-        assertNull(tube.findIntsersections(new Ray(new Point(2.5,1,1),new Vector(2,0,0))),
+        assertEquals(List.of(),tube.findIntsersections(new Ray(new Point(2.5,1,1),new Vector(2,0,0))),
                 "wrong intersect point");
     }
 }

@@ -56,9 +56,10 @@ public class Plane extends Geometry {
         double t = alignZero((p0.subtract(ray.getP0())).dotProduct(normal)/nv);
 
         if(t>0)
-        {
+        {   try{
             if(ray.getPoint(t).subtract(p0).normalize().equals(rayDir))
-                return null;
+                return List.of();}
+            catch (Exception exception){return List.of(new GeoPoint(this,ray.getPoint(t)));}
 
             return List.of(new GeoPoint(this,ray.getPoint(t)));
         }

@@ -51,7 +51,7 @@ class SphereTest {
                 "Ray from inside point is wrong calculate");
 
         // TC04: Ray starts after the sphere (0 points)
-        assertNull(sphere1.findIntsersections(new Ray(new Point(-5,-4,-3),new Vector(-2,-15,-6))),
+        assertEquals(List.of(),sphere1.findIntsersections(new Ray(new Point(-5,-4,-3),new Vector(-2,-15,-6))),
                 "Ray outside, never crosses the sphere is wrong ");
 
         // =============== Boundary Values Tests ==================
@@ -64,7 +64,7 @@ class SphereTest {
 
         // TC12: Ray starts at sphere and goes outside (0 points)
         result = sphere.findIntsersections(new Ray(new Point(2,1, 0), new Vector(0.5, 0, 1)));
-        assertNull(result, "Ray from the sphere himself to outside is wrong");
+        assertEquals(List.of(),result, "Ray from the sphere himself to outside is wrong");
 
         // **** Group: Ray's line goes through the center
         // TC13: Ray starts before the sphere (2 points)
@@ -81,13 +81,13 @@ class SphereTest {
 
         // **** Group: Ray's line is tangent to the sphere (all tests 0 points)
         // TC19: Ray starts before the tangent point
-        assertNull(sphere.findIntsersections(new Ray(new Point(0,1, 0), new Vector(2, 0, 0))),
+        assertEquals(List.of(),sphere.findIntsersections(new Ray(new Point(0,1, 0), new Vector(-2, 0, 0))),
                 "Ray starts before the tangent point is wrong");
         // TC20: Ray starts at the tangent point
-        assertNull(sphere.findIntsersections(new Ray(new Point(2,1, 0), new Vector(1, 0, 0))),
+        assertEquals(List.of(),sphere.findIntsersections(new Ray(new Point(2,1, 0), new Vector(1, 0, 0))),
                 "Ray starts at the tangent point is wrong");
         // TC21: Ray starts after the tangent point
-        assertNull(sphere.findIntsersections(new Ray(new Point(3,1, 0), new Vector(1, 0, 0))),
+        assertEquals(List.of(),sphere.findIntsersections(new Ray(new Point(3,1, 0), new Vector(1, 0, 0))),
                 "Ray starts after the tangent point is wrong");
 
         // **** Group: Special cases
