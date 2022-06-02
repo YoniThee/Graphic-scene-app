@@ -184,6 +184,7 @@ public class Camera {
 
 
     }
+
     private boolean bigChangeColor(List<rayColor> beam,Color avaregeColor) {
         for (rayColor rayColor:beam) {
             if(avaregeColor.isChange(rayTracerBase.traceRay(rayColor.ray)))
