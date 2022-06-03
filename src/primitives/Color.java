@@ -144,10 +144,10 @@ public class Color {
 	}
 
     public boolean isChange(Color color) {
-		if((rgb.d1 - color.rgb.d1 < 5 || rgb.d1 - color.rgb.d1 > -5) || (rgb.d2 - color.rgb.d2 < 5 || rgb.d2 - color.rgb.d2 > -5)
-				|| (rgb.d3 - color.rgb.d3 < 5 || rgb.d3 - color.rgb.d3 > -5))
-			return true;
-		else
+		if((Math.abs(rgb.d1 - color.rgb.d1) < 5 && Math.abs(rgb.d2 - color.rgb.d2) < 5
+				&& Math.abs(rgb.d3 - color.rgb.d3) < 5 ))
 			return false;
+		else
+			return true;
     }
 }

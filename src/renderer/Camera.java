@@ -33,6 +33,7 @@ public class Camera {
     private RayTracerBase rayTracerBase;
 
     private boolean AntiAlaising = false;
+    private boolean SuperSimple = false;
 
 
     public Camera(Point p0, Vector vTo, Vector vUp) {
@@ -83,8 +84,13 @@ public class Camera {
         rayTracerBase = ray;
         return this;
     }
+
     public Camera setAntiAlising(Boolean antiAlising){
         AntiAlaising = antiAlising;
+        return this;
+
+    }  public Camera setSuperSimple(Boolean superSimple){
+        SuperSimple = superSimple;
         return this;
     }
     /**
@@ -103,11 +109,12 @@ public class Camera {
         int threadsCount = 3;
         Pixel.initialize(nY, nX, 1);
         if(AntiAlaising) {
-            int divide = 2;
+            int divide = 3;
             while (threadsCount-- > 0) {
                 new Thread(() -> {
                     for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())
-                        castBeam(constructBeam(nX, nY, pixel.col, pixel.row, divide), divide, pixel);
+                        //castBeam(constructBeam(nX, nY, pixel.col, pixel.row, divide), 0, pixel);
+                        castBeam(constructFiveRays(nX, nY, pixel.col, pixel.row),0,pixel);
                 }).start();
             }
             Pixel.waitToFinish();
@@ -139,21 +146,21 @@ public class Camera {
      * This function is get location of specific point at the view plane and crate beam(list) of rays  from camera
      * to the location and calculate his color, and after that write the color to the image
      * */
-    private void castBeam(List<rayColor> beam,int divide,Pixel pixel) {
-        Color endColor = new Color(0,0,0);
+    private void castBeam(List<rayColor> beam,int depth,Pixel pixel) {
+       /* Color endColor = new Color(0,0,0);
         for (var rayColor:beam) {
             endColor = endColor.add(rayColor.color);
         }
         endColor = endColor.reduce(beam.size());
-        while (divide <= 8){//stop condition for the recursive call of this function
+        while (depth <= 8){//stop condition for the recursive call of this function
             //depth of the recursive is up to 4 times - 2*2,4*4,8*8,16*16
             if (bigChangeColor(beam,endColor)) {
 
                 //add to the beam more rays that through the pixel for better quality
                 //because we want to add more rays, but not  to lose our last calculate of random rays, we are adding
-                //more rays at the same number of our divide
-                beam.addAll(constructBeam(imageWriter.getNx(), imageWriter.getNy(), pixel.row, pixel.col, divide));
-                divide *= 2; //continue to stop condition
+                //more rays at the same number of our depth
+                beam.addAll(constructBeam(imageWriter.getNx(), imageWriter.getNy(), pixel.row, pixel.col, depth));
+                depth *= 2; //continue to stop condition
                 //calculate the new color, maybe now there is the average color, so we should stop the recursive.
                 for (var rayColor:beam) {
                     endColor = endColor.add(rayColor.color);
@@ -168,22 +175,94 @@ public class Camera {
 
 
         imageWriter.writePixel(
-                pixel.row, pixel.col,endColor);
-        /*int indexBeam = 0;
-        for (var rayColor:beam) {
-            //compare the color of center point at pixel to all the corners
-           if(rayColor.color.isChange(beam.get(2).color))
-           {
-               indexBeam == 1 ? constructBeam(constructFiveRays(imageWriter.getNx(),imageWriter.getNy(), pixel.col, pixel.row));
-               indexBeam == 1 ? constructBeam();
-               indexBeam == 3 ? constructBeam();
-               indexBeam == 4 ? constructBeam();
-           }
-           indexBeam++;
-        }*/
+                pixel.row, pixel.col,endColor);*/
+        if(SuperSimple) {
+            int nX = imageWriter.getNx();
+            int nY = imageWriter.getNy();
+            int indexBeam = 0;
+            for (var rayColor : beam) {
+                //compare the color of center point at pixel to all the corners
+                //stop condition for the recursive call, we got up to 4 calls
+                if (depth < 4 && rayColor.color.isChange(beam.get(2).color)) {
+                    depth++;
+                    nY = nY/(2 * depth);
+                    nX = nX/(2 * depth);
+                    //reduce the pixel by 4
 
+                    //the difference  color is #     *
+                    //                            *
+                    //                         *     *
+                    if (indexBeam == 0)
+                        castBeam(constructFiveRays(nX,nY, 0, 0), depth, pixel);
+                    //the difference  color is *     #
+                    //                            *
+                    //                         *     *
+                    if (indexBeam == 1)
+                        castBeam(constructFiveRays(nX, nY, 0, nX-1), depth, pixel);
+                    //the difference  color is *     *
+                    //                            *
+                    //                         *     #
+                    if (indexBeam == 3)
+                        castBeam(constructFiveRays(nX, nY, nY-1, nX-1), depth, pixel);
+                    //the difference  color is *     *
+                    //                            *
+                    //                         #     *
+                    if (indexBeam == 4)
+                        castBeam(constructFiveRays(nX, nY, nY-1, 0), depth, pixel);
+                }
+                indexBeam++;
+            }
+            Color finalColor = new Color(0,0,0);
+            for (var rayColor:beam) {
+                finalColor = finalColor.add(rayColor.color);
+            }
+            imageWriter.writePixel(pixel.row,pixel.col,finalColor.reduce(beam.size()));
+        }
+        else
+        {
+            Color finalColor = new Color(0,0,0);
+            for (var ray : beam) {
+                finalColor = finalColor.add(ray.color);
+            }
+            imageWriter.writePixel(pixel.row, pixel.col, finalColor.reduce(beam.size()));
+        }
 
     }
+
+public List<rayColor> constructFiveRays(int nX, int nY,int i, int j) {
+    List<rayColor>myRays = new LinkedList<>();
+    /**
+     * pixel height
+     */
+    double rY = alignZero(height / nY);
+    /**
+     * pixel width
+     */
+    double rX = alignZero(width / nX);
+
+    Point center = initializePC(nY,nX,i,j);
+
+    // up left
+    Ray ray1 =  new Ray(p0, center.add(vRight.scale(-rX / 2)).add(vUp.scale(rY / 2)).subtract(p0));
+    myRays.add(new rayColor(ray1,rayTracerBase.traceRay(ray1)));
+    // up right
+    Ray ray2 = new Ray(p0, center.add(vRight.scale(rX / 2)).add(vUp.scale(rY / 2)).subtract(p0));
+    myRays.add(new rayColor(ray2,rayTracerBase.traceRay(ray2)));
+    // center
+    Ray ray3 = constructRay(nY,nX,j,i);
+    myRays.add(new rayColor(ray3,rayTracerBase.traceRay(ray3)));
+    // down left
+    Ray ray4 = new Ray(p0, center.add(vRight.scale(-rX / 2)).add(vUp.scale(-rY / 2)).subtract(p0));
+    myRays.add(new rayColor(ray4,rayTracerBase.traceRay(ray4)));
+    // down right
+    Ray ray5 = new Ray(p0, center.add(vRight.scale(rX / 2)).add(vUp.scale(-rY / 2)).subtract(p0));
+    myRays.add(new rayColor(ray5,rayTracerBase.traceRay(ray5)));
+    //list of rays to be returned
+    // *     *
+    //    *
+    // *     *
+    return myRays;
+}
 
     private boolean bigChangeColor(List<rayColor> beam,Color avaregeColor) {
         for (rayColor rayColor:beam) {
@@ -197,7 +276,7 @@ public class Camera {
      * This function is get location at the view plane and limit of row and colum, and crate list of rays for the pixel
      * */
     public List<rayColor> constructBeam(int nX,  int nY, int j , int i, double divide) {
-        Point Pij = initializePC(nY,nX,j,i);
+        Point Pij = initializePC(nY,nX,i,j);
         var rayList = new LinkedList<rayColor>();
         Ray mainRay = constructRay(nX, nY, j, i);
         rayList.add(new rayColor(mainRay,rayTracerBase.traceRay(mainRay))); // The main ray
