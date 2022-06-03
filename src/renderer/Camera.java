@@ -108,13 +108,24 @@ public class Camera {
         int nX = imageWriter.getNx();
         int threadsCount = 3;
         Pixel.initialize(nY, nX, 1);
-        if(AntiAlaising) {
+        if(AntiAlaising && SuperSimple) {
             int divide = 3;
             while (threadsCount-- > 0) {
                 new Thread(() -> {
                     for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())
                         //castBeam(constructBeam(nX, nY, pixel.col, pixel.row, divide), 0, pixel);
                         castBeam(constructFiveRays(nX, nY, pixel.col, pixel.row),0,pixel);
+                }).start();
+            }
+            Pixel.waitToFinish();
+        }
+        if(AntiAlaising && !SuperSimple) {
+            int divide = 6;
+            while (threadsCount-- > 0) {
+                new Thread(() -> {
+                    for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())
+                        //castBeam(constructBeam(nX, nY, pixel.col, pixel.row, divide), 0, pixel);
+                        castBeam(constructBeam(nX, nY, pixel.col, pixel.row,divide),0,pixel);
                 }).start();
             }
             Pixel.waitToFinish();
@@ -275,7 +286,7 @@ public List<rayColor> constructFiveRays(int nX, int nY,int i, int j) {
     /**
      * This function is get location at the view plane and limit of row and colum, and crate list of rays for the pixel
      * */
-    public List<rayColor> constructBeam(int nX,  int nY, int j , int i, double divide) {
+    public List<rayColor> constructBeam(int nX,  int nY, int i , int j, double divide) {
         Point Pij = initializePC(nY,nX,i,j);
         var rayList = new LinkedList<rayColor>();
         Ray mainRay = constructRay(nX, nY, j, i);
