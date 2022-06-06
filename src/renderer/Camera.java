@@ -115,15 +115,13 @@ public class Camera {
         int nX = imageWriter.getNx();
         int threadsCount = 3;
         Pixel.initialize(nY, nX, 1);
-        Color finalColor = new Color(0,0,0);
-
         if(AntiAlaising && SuperSimple) {
+           // int divide = 3;
             while (threadsCount-- > 0) {
                 new Thread(() -> {
                     for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())
                         //castBeam(constructBeam(nX, nY, pixel.col, pixel.row, divide), 0, pixel);
-                        imageWriter.writePixel(pixel.row, pixel.col,
-                    castBeam(constructFiveRays(nX, nY, pixel.col, pixel.row),0,finalColor));
+                        castBeam(constructFiveRays(nX, nY, pixel.col, pixel.row),0,pixel);
                 }).start();
             }
             Pixel.waitToFinish();
@@ -133,9 +131,7 @@ public class Camera {
             while (threadsCount-- > 0) {
                 new Thread(() -> {
                     for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())
-                        //castBeam(constructBeam(nX, nY, pixel.col, pixel.row, divide), 0, pixel);
-                        imageWriter.writePixel(pixel.row, pixel.col,
-                                castBeam(constructFiveRays(nX, nY, pixel.col, pixel.row),0,finalColor));
+                        castBeam(constructBeam(nX, nY, pixel.col, pixel.row,divide),0,pixel);
                 }).start();
             }
             Pixel.waitToFinish();
@@ -167,7 +163,7 @@ public class Camera {
      * This function is get location of specific point at the view plane and crate beam(list) of rays  from camera
      * to the location and calculate his color, and after that write the color to the image
      * */
-    private Color castBeam(List<rayColor> beam,int depth,Color finalColor) {
+    private void castBeam(List<rayColor> beam,int depth,Pixel pixel) {
        /* Color endColor = new Color(0,0,0);
         for (var rayColor:beam) {
             endColor = endColor.add(rayColor.color);
@@ -202,8 +198,6 @@ public class Camera {
             int nY = imageWriter.getNy();
             int indexBeam = 0;
             for (var rayColor : beam) {
-                finalColor = finalColor.add(rayColor.color);
-
                 //compare the color of center point at pixel to all the corners
                 //stop condition for the recursive call, we got up to 4 calls
                 if (depth > 0 && rayColor.color.isChange(beam.get(2).color)) {
@@ -212,44 +206,76 @@ public class Camera {
                     nY = nY/2;
                     nX = nX/2;
                     //reduce the pixel by 4
+
                     //the difference  color is #     *
                     //                            *
                     //                         *     *
                     if (indexBeam == 0)
-                       castBeam(constructFiveRays(nX,nY, 0, 0), depth, new Color(0,0,0));
+                        castBeam(constructFiveRays(nX,nY, 0, 0), depth, pixel);
                     //the difference  color is *     #
                     //                            *
                     //                         *     *
                     if (indexBeam == 1)
-                        return finalColor.add(castBeam(constructFiveRays(nX, nY, 0, nX-1), depth, pixel));
+                        castBeam(constructFiveRays(nX, nY, nX-1, 0), depth, pixel);
                     //the difference  color is *     *
                     //                            *
                     //                         *     #
                     if (indexBeam == 3)
-                        return finalColor.add(castBeam(constructFiveRays(nX, nY, nY-1, nX-1), depth, pixel));
+                        castBeam(constructFiveRays(nX, nY, nX-1, nY-1), depth, pixel);
                     //the difference  color is *     *
                     //                            *
                     //                         #     *
                     if (indexBeam == 4)
-                        return  finalColor.add(castBeam(constructFiveRays(nX, nY, nY-1, 0), depth, pixel));
+                        castBeam(constructFiveRays(nX, nY, 0, nY-1), depth, pixel);
                 }
                 indexBeam++;
             }
-            return finalColor.reduce(beam.size());
+
+                double rColor = 0.0, gColor = 0.0, bColor = 0.0;
+                for (var ray : beam) {
+                    rColor += ray.color.getColor().getRed();
+                    gColor += ray.color.getColor().getGreen();
+                    bColor += ray.color.getColor().getBlue();
+                }
+
+
+                imageWriter.writePixel(
+                        pixel.row, pixel.col, new Color(
+                                rColor / beam.size(),
+                                gColor / beam.size(),
+                                bColor / beam.size()));
+
+
 
         }
         else
         {
+           // Color finalColor = new Color(0,0,0);
+           // for (var ray : beam) {
+          //      finalColor = finalColor.add(ray.color);
+         //   }
+         //   imageWriter.writePixel(pixel.row, pixel.col, finalColor.reduce(beam.size()));
+
+            double rColor = 0.0, gColor = 0.0,bColor =0.0;
             for (var ray : beam) {
-                finalColor = finalColor.add(ray.color);
+                rColor += ray.color.getColor().getRed();
+                gColor +=ray.color.getColor().getGreen();
+                bColor += ray.color.getColor().getBlue();
             }
-            return finalColor.reduce(beam.size());
+            int nX = imageWriter.getNx();
+            int nY = imageWriter.getNy();
+            imageWriter.writePixel(
+                    pixel.row, pixel.col, new Color(
+                            rColor / beam.size(),
+                            gColor /  beam.size(),
+                            bColor /  beam.size()));
+
+
         }
 
     }
 
-
-    public List<rayColor> constructFiveRays(int nX, int nY,int i, int j) {
+public List<rayColor> constructFiveRays(int nX, int nY,int i, int j) {
     List<rayColor>myRays = new LinkedList<>();
     /**
      * pixel height
