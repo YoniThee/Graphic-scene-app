@@ -107,6 +107,9 @@ class PianoTestOld {
 	Camera camera = new Camera(new Point(-150, -150, 80), new Vector(1, 1, 0), new Vector(0,0,1)/*new Vector(1, -1, 0)*/) //
 			.setVPSize(200, 200).setVPDistance(200) //
 			.setRayTracer(new RayTracerBasic(scene));
+	Camera camera2 = new Camera(new Point(-130, 250, 50), new Vector(0, 1, 0), new Vector(0,0,1)/*new Vector(1, -1, 0)*/) //
+			.setVPSize(200, 200).setVPDistance(200) //
+			.setRayTracer(new RayTracerBasic(scene));
 	@Test
 	void CreatePiano() {
 		scene.geometries.add(back,front,rightSide,leftSide,roof,KBfront,KBrightSide,KBleftSide,KBroof,wallBack,wallSide
@@ -129,10 +132,15 @@ class PianoTestOld {
 		//scene.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), new Double3(0.15)));
 
 		//camera.setImageWriter(new ImageWriter("Pianozz", 400, 400)); //
-		camera.setImageWriter(new ImageWriter("PianoThreadTemp100", 800, 800)) //
+		camera.setImageWriter(new ImageWriter("PianoThreadTemp72", 400, 400)) //
 				.setAntiAlising(true)
 				.setSuperSimple(true)
 				.renderImage() //
 				.writeToImage();
+		/*camera2.setImageWriter(new ImageWriter("PianoThread_camera2", 400, 400)) //
+				.setAntiAlising(true)
+				.setSuperSimple(true)
+				.renderImage() //
+				.writeToImage();*/
 	}
 }
