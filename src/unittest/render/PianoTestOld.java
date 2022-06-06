@@ -129,9 +129,9 @@ class PianoTestOld {
 		//scene.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), new Double3(0.15)));
 
 		//camera.setImageWriter(new ImageWriter("Pianozz", 400, 400)); //
-		camera.setImageWriter(new ImageWriter("PianoThreadTemp", 400, 400)) //
+		camera.setImageWriter(new ImageWriter("PianoThreadTemp60", 400, 400)) //
 				.setAntiAlising(true)
-				//.setSuperSimple(true)
+				.setSuperSimple(true)
 				.renderImage() //
 				.writeToImage();
 	}
