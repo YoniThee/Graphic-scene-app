@@ -131,7 +131,7 @@ class PianoTestOld {
 		//camera.setImageWriter(new ImageWriter("Pianozz", 400, 400)); //
 		camera.setImageWriter(new ImageWriter("PianoThreadTemp", 400, 400)) //
 				.setAntiAlising(true)
-				//.setSuperSimple(true)
+				.setSuperSimple(true)
 				.renderImage() //
 				.writeToImage();
 	}
