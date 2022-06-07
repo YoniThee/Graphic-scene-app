@@ -40,12 +40,9 @@ class TriangleTest {
      */
     @Test
 
-
     public void findIntersections()
     {
         Triangle triangle = new Triangle(new Point(0,2,0),new Point(2,2,0),new Point(1,2,1));
-
-
 
         // ============ Equivalence Partitions Tests ==============
         // TC01: A point inside the triangle

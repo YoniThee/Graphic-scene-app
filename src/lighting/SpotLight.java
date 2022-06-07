@@ -26,9 +26,8 @@ public class SpotLight extends PointLight{
         this.direction = vector.normalize();
     }
 
-    /**
-     * This function is calculate the intensity color by the formula we learned at the course
-     * */
+     //This function is calculate the intensity color by the formula we learned at the course
+
     @Override
     public Color getIntensity(Point p) {
         double max = Math.max(0, direction.dotProduct(getL(p)));

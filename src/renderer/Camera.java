@@ -126,7 +126,7 @@ public class Camera {
         }
 
         else if(AntiAlaising && !SuperAduptive) {
-            int divide = 6;
+            int divide = 33;
             while (threadsCount-- > 0) {
                 new Thread(() -> {
                     for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())

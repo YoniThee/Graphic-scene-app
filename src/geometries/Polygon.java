@@ -116,6 +116,7 @@ public class Polygon extends Geometry {
 				for (Point point3D : vertices) {
 					vectorList.add(point3D.subtract(P0));
 				}
+
 				// all the normals that come out of the sides between every 2 adjacent vectors
 				LinkedList<Vector> normalList = new LinkedList<>();
 				for (int i = 0; i < vectorList.size() - 1; i++) {

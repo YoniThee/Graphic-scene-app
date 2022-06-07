@@ -38,40 +38,8 @@ public class Sphere extends Geometry {
         return point.subtract(center).normalize();}
 
     @Override
-        protected List<GeoPoint> findGeoIntsersectionsHelper(Ray ray)
-    {
-        /*
-        // u = Vector(O-P0)
-        Vector u = center.subtract(ray.getP0());
-        // Tm = V*u
-        double Tm = u.dotProduct(ray.getDir());
-        // d = |U|^2-Tm^2
-        double d = Math.sqrt(u.lengthSquared() - (Tm*Tm));
-        if(d >= this.radius)
-            return List.of();
-        else {
-            // Th = sqrt(r^2-d^2)
-            double Th = Math.sqrt((this.radius * this.radius) - (d * d));
-            double Ti = Tm + Th;
-            // only if t > 0
-            if (Ti > 0) {
-                //p1 = p0 + Ti*V
-                Point p1 = ray.getPoint(Ti);
-                Ti = alignZero(Tm - Th);
-                if (Ti > 0) {
-                    // p2 = p0 + Ti*V
-                    Point p2 = ray.getP0().add(ray.getDir().scale(Ti));
-                    return List.of(new GeoPoint(this,p1),new GeoPoint(this,p2));
-                } else {
-                    return List.of(new GeoPoint(this,p1));
-                }
-            }
-            else
-                return List.of();
-        }
-    }
+        protected List<GeoPoint> findGeoIntsersectionsHelper(Ray ray) {
 
-         */
         if (ray.getP0() == center) {
             return List.of(new GeoPoint(this, ray.getPoint(radius)));
         }
@@ -104,5 +72,4 @@ public class Sphere extends Geometry {
 
         return List.of();
     }
-
 }

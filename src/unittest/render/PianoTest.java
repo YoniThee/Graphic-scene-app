@@ -135,10 +135,10 @@ class PianoTest {
 		//scene.setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.15)));
 
 
-		camera.setImageWriter(new ImageWriter("PianoThread_SuperAduptive_Try3", 1000, 1000)) //
+		camera.setImageWriter(new ImageWriter("PianoThread_AntiAlising_33*33", 1000, 1000)) //
 				.setAntiAlising(true)//
-				.setSuperSimple(true)//
-				.setDepthOfRec(8)
+				//.setSuperSimple(true)//
+				//.setDepthOfRec(8)
 				.renderImage() //
 				.writeToImage();
 	}
